@@ -13,3 +13,6 @@ if test.control_code():
 else:
     print("Fail")
     
+# clear attempt-code
+with open('Attempts/helloworld.py',"w") as ansFile:
+    ansFile.write('')
