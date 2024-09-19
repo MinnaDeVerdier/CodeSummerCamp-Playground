@@ -1,0 +1,35 @@
+$color-primary : #1a33f5;
+$color-secondary : #7cf7f9;
+
+$color-light : #f2f4f8;
+$color-border : #e2e4e8;
+$color-link : #0700a4;
+
+$color-add : #0700a4;
+$color-executive : #0700a4;
+$color-improve : #0700a4;
+
+$indigo : #150b3f;
+$darkblue : #0700a4;
+$blue : #1a33f5;
+$aqua : #7cf7f9;
+
+$coral : #f08175;
+$apricot : #f6af8e;
+$almond : #fce2dd;
+
+$background : #fef3f1;
+
+$color-dark : $indigo;
+
+$font-icons : "Font Awesome\ 5 Pro";
+
+$bp-sm: 576px;
+$bp-md: 768px;
+$bp-lg: 992px;
+$bp-xl: 1200px;
+$bp-xxl: 1920px;
+
+
+
+$borderRadius : .125rem;

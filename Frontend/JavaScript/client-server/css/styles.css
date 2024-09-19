@@ -1,0 +1,155 @@
+﻿@import 'bindings';
+
+/* Added font-family according to https://codepen.io/byskat/pen/jOqoxWK */
+@font-face {
+    font-family: "Uxumgrotesque";
+    src: url("https://distracted-einstein-2cde45.netlify.app/fonts/UxumGrotesque-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    /*margin makes the items actually stretch to the whole page. leaves white empty space otherwise.*/
+    margin: 0px;
+    background-color: #6F00FF;
+    font-family: Uxumgrotesque;
+}
+.blob {
+    z-index: 10;
+}
+/* unvisited link */
+a:link {
+    color: #7CF7F9;
+}
+
+/* visited link */
+a:visited {
+    color: #6F00FF;
+}
+
+/* mouse over link */
+a:hover {
+    font-weight: bolder;
+}
+
+/* selected link */
+a:active {
+    color: #1A33F5;
+} 
+
+.nav-bar{
+    background-color: #000B3D;
+    width: 100%;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #7CF7F9;
+    /* box-shadow: 2px 2px 8px #000000; */
+}
+
+.nav-links
+{
+    display: flex;
+    width: 100%;
+	justify-content: space-between; 
+	list-style: none;
+	text-decoration: none;
+}
+
+.container {
+    padding-left: 10px;
+}
+.exercise_text{
+    background-color: #FCE2DD;
+    align-content: space-evenly;
+    width: 80%;
+    display:flex;
+    align-items: center;
+    margin-top: 15px;
+    /* margin-left: 10%; */
+    margin-right: 10%;
+}
+
+.exercise_input{
+    /* background-color: #1A33F5; */
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 200px;
+    float: left;
+}
+
+textarea{
+    resize: none;
+    background-color: #FCE2DD;
+    width: 80%;
+    height: 80%;
+}
+
+.display
+{
+    height: fit-content;
+    width: fit-content;
+    min-width: 200px;
+    min-height: 100px;
+    max-width: 80%;
+    /* background: #FFF2F0; */
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: 2px dotted #000000;
+    border-radius: 5px;
+    margin: 10px 0px ;
+    padding: 5px;
+    visibility: hidden;
+}
+
+.footer{
+    background-color: #000B3D; 
+    /*Think this puts it at the bottom of the browser window, rather than the webpage itself.
+    That might be bad in the future if we add a scrollbar, but works for now.*/
+    position: fixed; bottom: 0;
+}
+
+.logo{
+    /*Centers images, from https://www.w3schools.com/howto/howto_css_image_center.asp*/
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn {
+    padding: .6rem 1.5rem .7rem 1.5rem;
+    border-radius: 100px;
+    border-width: 2px;
+    background: #1a33f5;
+    color: #150b3f;
+    font-weight: 600;
+
+    &:hover {
+        background: #7cf7f9;
+        color: #fff;
+    }
+
+    &.btn-outline-hero{
+    background: transparent;
+    border-color: #7cf7f9;
+    color: #7cf7f9 !important;
+
+        &:hover {
+            background: #7cf7f9 !important;
+            color: #150b3f !important;
+        }
+    }
+}    
+/* 
+Skill - Hex
+Blueﾠ#1A33F5
+Aquaﾠ#7CF7F9
+Dark Blueﾠ#0700A4
+Indigoﾠ#000B3D
+Lilacﾠ#F3E9FF
+Violetﾠ#6F00FF
+Coralﾠ#F08175
+Apricotﾠ#F6AF8E
+Almondﾠ#FCE2DD
+Almond Milkﾠ#FFF2F0
+*/
