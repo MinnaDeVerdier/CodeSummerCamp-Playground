@@ -27,6 +27,8 @@ const port = 3000;
 //include folders in running server
 app.use('/css', oExpress.static(path.join(__dirname, '../css')));
 app.use(oExpress.static(path.join(__dirname, '../pages')));
+//app.use(oExpress.static(path.join(__dirname, '../files')));
+
 
 //app.use(oExpress.json())
 

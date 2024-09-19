@@ -6,12 +6,12 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG NODE_VERSION=20.9.0
+ARG NODE_VERSION=20
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}
 
 # Use production node environment by default.
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 
 WORKDIR /usr/src/app
@@ -26,7 +26,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     npm ci --omit=dev
 
 # Run the application as a non-root user.
-USER node
+#USER node
 
 # Copy the rest of the source files into the image.
 COPY . .
@@ -35,4 +35,4 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD node server/server.js
+CMD ["node", "server/server.js"]
