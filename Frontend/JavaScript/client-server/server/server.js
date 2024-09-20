@@ -27,7 +27,7 @@ const port = 3000;
 //include folders in running server
 app.use('/css', oExpress.static(path.join(__dirname, '../css')));
 app.use(oExpress.static(path.join(__dirname, '../pages')));
-//app.use(oExpress.static(path.join(__dirname, '../files')));
+app.use(oExpress.static(path.join(__dirname, '../files')));
 
 
 //app.use(oExpress.json())
@@ -42,14 +42,14 @@ app.use(bodyParser.text({ type: 'text/plain'}))
 app.post("/", (aRequire, aResponse) =>
 {
     writeToFile(aRequire.body)
-    console.log("POSTED!!!")
+   // console.log("POSTED!!!")
     console.log(aRequire.body)
 })
 
 import oFileStream from 'fs';
 let writeToFile = (aText) =>
 {
-    oFileStream.writeFile("../files/recievedText.txt", aText, (err) =>
+    oFileStream.writeFile("files/recievedText.txt", aText, (err) =>
     {
         if(err) return console.error(err)
         else console.log("Data written to file....")

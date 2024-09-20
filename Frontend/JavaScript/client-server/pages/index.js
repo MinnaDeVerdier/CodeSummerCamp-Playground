@@ -11,8 +11,8 @@ let writeDataFromFile =()=>
     fetch("./files/savefile.txt")
     .then( (response) => 
     {
-        return response.text()
         console.log("response: ",response.text)
+        return response.text()
     })
     .then( (dataItem) =>
     {

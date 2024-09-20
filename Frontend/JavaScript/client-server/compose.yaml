@@ -12,7 +12,7 @@ services:
     build:
       context: .
     environment:
-      NODE_ENV: production
+      NODE_ENV: dev
     ports:
       - 3000:3000
     develop:
@@ -20,6 +20,8 @@ services:
       - action: sync
         path: ./
         target: /usr/src/app
+        # ignore:
+        #     - node_modules/
       - action: rebuild
         path: package.json
 
