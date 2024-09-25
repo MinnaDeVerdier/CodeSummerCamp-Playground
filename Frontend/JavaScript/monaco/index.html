@@ -1,0 +1,120 @@
+<!--BEFORE USE npm install 
+    jquery, monaco-editor, node 
+OR SPECIFICS FOR CURRENT CODE npm install 
+    jquery@3.7.1 AND monacor-editor@0.51.0 AND node-->
+
+<!DOCTYPE html>
+<html>
+    <head> 
+        <title>Editor Node</title>
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <link rel="stylesheet" data-name="vs/editor/editor.main" 
+            href="node_modules/monaco-editor/min/vs/editor/editor.main.css" />
+
+    </head>
+
+    <body>
+        <script>var require = { paths: {vs: 'node_modules/monaco-editor/min/vs'}};</script>
+
+        <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script src="node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
+        <script src="node_modules/monaco-editor/min/vs/basic-languages/javascript/javascript.min.js" ></script>
+        <script src="node_modules/monaco-editor/min/vs/basic-languages/python/python.min.js"></script>
+
+
+        <h1>Python Mohnaco</h1>
+        <p id="instruction">Write Code Here:</p>
+
+        <pre id="container">
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+        </pre>
+
+        <p>End of Code</p>
+
+        <script>
+            var codeContent = $.trim($('#container').text());
+                $('#container').html('');
+    
+                var editorCodeBlock = monaco.editor.create(document.getElementById('container'), {
+                value: codeContent,
+                language: "python",
+                theme: "vs-dark",
+                lineNumbers: 'on',
+                glyphMargin: false,
+                vertical: 'auto',
+                horizontal: 'auto',
+                verticalScrollbarSize: 10,
+                    horizontalScrollbarSize: 10,
+                scrollBeyondLastLine: false,
+                readOnly: false,
+                automaticLayout: true,
+                minimap: { 
+                    enabled: true
+                },
+                lineHeight: 15,
+            });
+            $("#container").height(400);
+        </script>
+
+        <p>End of Page</p>
+    </body>
+</html>
