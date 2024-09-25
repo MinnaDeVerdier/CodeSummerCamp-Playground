@@ -57,8 +57,17 @@ a:active {
 	text-decoration: none;
 }
 
-.container {
+.page_container {
     padding-left: 10px;
+    box-sizing: border-box;
+}
+/* #container {
+    width: 500px;
+    height: 500px;
+    border: 5px solid red;
+} */
+pre{
+    font: inherit;
 }
 .exercise_text{
     background-color: #FCE2DD;
@@ -70,40 +79,48 @@ a:active {
     /* margin-left: 10%; */
     margin-right: 10%;
 }
-
-.exercise_input{
-    /* background-color: #1A33F5; */
-    margin-left: 10%;
-    margin-right: 10%;
-    height: 200px;
-    float: left;
-}
-
 textarea{
     resize: none;
     background-color: #FCE2DD;
     width: 80%;
     height: 80%;
+    font: inherit;
 }
 
+#code_container{
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    width: 100%;
+}
+.exercise_input{
+    /* background-color: #1A33F5; */
+    box-sizing: inherit;
+    margin: 16px 10px 16px 0px;
+    height: 800px;
+    width: 47%;
+    /* float: left; */
+}
 .display
 {
-    height: fit-content;
-    width: fit-content;
-    min-width: 200px;
-    min-height: 100px;
-    max-width: 80%;
-    /* background: #FFF2F0; */
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-sizing: inherit;
+    height: 800px;
+    width: 47%;
+    /* min-width: 200px;
+    min-height: 100px;*/
+    background: #FFF2F0;
+  /*  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border: 2px dotted #000000;
-    border-radius: 5px;
-    margin: 10px 0px ;
-    padding: 5px;
-    visibility: hidden;
+    border-radius: 5px;*/
+    margin: 16px 0px;
+    padding: 5px; 
+    /* visibility: hidden; */
 }
 
 .footer{
+    z-index: 5;
     background-color: #000B3D; 
+    width: 100%;
     /*Think this puts it at the bottom of the browser window, rather than the webpage itself.
     That might be bad in the future if we add a scrollbar, but works for now.*/
     position: fixed; bottom: 0;
@@ -115,18 +132,21 @@ textarea{
     margin-left: auto;
     margin-right: auto;
 }
+img{
+    height: 40px;
+}
 
 .btn {
     padding: .6rem 1.5rem .7rem 1.5rem;
     border-radius: 100px;
     border-width: 2px;
-    background: #1a33f5;
+    background: #FFF2F0;
     color: #150b3f;
     font-weight: 600;
 
     &:hover {
         background: #7cf7f9;
-        color: #fff;
+        color: #150b3f;
     }
 
     &.btn-outline-hero{
