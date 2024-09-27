@@ -19,6 +19,8 @@ import { dirname } from 'path';
 import path from 'path';
 import bodyParser from 'body-parser';
 
+import { spawn } from 'node:child_process';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = oExpress();
@@ -39,11 +41,29 @@ app.use(bodyParser.text({ type: 'text/plain'}))
 //     aResponse.sendFile("./pages/index.html", { root: __dirname })
 // })
 
+//From https://nodejs.org/api/child_process.html#child-process
+
+let runPython =()=> {
+    const ls = spawn('sh python.sh');
+    ls.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+
+    ls.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    ls.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+}
+
 app.post("/", (aRequire, aResponse) =>
 {
     writeToFile(aRequire.body)
    // console.log("POSTED!!!")
     console.log(aRequire.body)
+    runPython()
 })
 
 import oFileStream from 'fs';

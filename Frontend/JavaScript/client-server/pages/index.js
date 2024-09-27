@@ -1,9 +1,23 @@
 let inputTextField = document.querySelector("#textInput")
 let display = document.querySelector("#display")
 let inputButton = document.querySelector("#inputButton")
-
+let connectionButton = document.querySelector("#connectionButton")
 //inputButton.addEventListener("click", ()=>{ readDataFromUser(); })
 inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
+
+connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
+
+let connectToBackend =()=>
+    {
+        //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
+        filePath = "./files/testText.txt";
+        const reader = new FileReader();
+        reader.onload = function fileReadCompleted() {
+            // when the reader is done, the content is in reader.result.
+            console.log(reader.result);
+          };
+          reader.readAsText(this.files[0]);
+    }
 
 // 1 Läs från textfil till display
 let writeDataFromFile =()=>
