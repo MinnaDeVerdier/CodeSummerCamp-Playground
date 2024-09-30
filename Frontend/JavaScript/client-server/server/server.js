@@ -33,7 +33,7 @@ app.post("/", (req, res) => {
 
 import filestream from 'fs';
 let writeToFile = (aText) => {
-    filestream.writeFile("codefiles/recievedText.txt", aText, (err) =>
+    filestream.writeFile("codefiles_temp/recievedText.txt", aText, (err) =>
     {
         if(err) return console.error(err)
         else console.log("Data written to file....")
