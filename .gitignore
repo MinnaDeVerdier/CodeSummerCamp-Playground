@@ -170,3 +170,6 @@ Frontend/WebsiteFront/Properties
 Frontend/WebsiteFront/*.json
 Frontend/WebsiteFront/*.user
 .vs
+CodeSummerCamp-Playground.sln
+.vscode/launch.json
+.vscode/tasks.json

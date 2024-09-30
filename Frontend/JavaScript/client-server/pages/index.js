@@ -1,11 +1,14 @@
 // Run code after html-page is loaded
 $(function() {
+    let display = document.querySelector("#feedbackDisplay")
+    let inputButton = document.querySelector("#runCodeButton")
+    let connectionButton = document.querySelector("#connectionButton")
+    //let inputTextField = document.querySelector("#textInput")
+    inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
 
-let display = document.querySelector("#feedbackDisplay")
-let inputButton = document.querySelector("#runCodeButton")
-inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
+    connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
 
-// Create editor
+    // Create editor
     var codeContent = ["text = ''",
         "if 1==1:",
         "    text = 'Hello World'",
@@ -74,45 +77,57 @@ inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
         lineHeight: 22,
     });
 
-// // 1 Läs från textfil till display
-// let writeDataFromFile =()=>
-// {
-//     fetch("./files/savefile.txt")
-//     .then( (response) => 
-//     {
-//         console.log("response: ",response.text)
-//         return response.text()
-//     })
-//     .then( (dataItem) =>
-//     {
-//         display.innerHTML = dataItem
-//         inputTextField.value = dataItem
-//         console.log("dataitem: ", dataItem)
-//     })
-//     .catch( (error) =>
-//     {
-//         console.log(error)
-//     })
-// }
-
-// 2 Skriv till textfil från input
-let getDataFromUser =()=>
-{
-    let aText = editorCodeBlock.getValue()
-    fetch("./", {
-        method: "post",
-        headers: {
-            "Content-Type": "text/plain"
-            },
-        body: aText
-    })
-    .then(response =>
+    let connectToBackend =()=>
     {
-        console.log("response: ",response.text())
-        display.innerText += "\n\nSENT"
-    })
-    .catch( (error) => { console.log(error)})
-}
+        //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
+        filePath = "./files/testText.txt";
+        const reader = new FileReader();
+        reader.onload = function fileReadCompleted() {
+            // when the reader is done, the content is in reader.result.
+            console.log(reader.result);
+        };
+        reader.readAsText(this.files[0]);
+    }
+
+    // 1 Läs från textfil till display
+    let writeDataFromFile =()=>
+    {
+        fetch("./files/savefile.txt")
+        .then( (response) => 
+        {
+            console.log("response: ",response.text)
+            return response.text()
+        })
+        .then( (dataItem) =>
+        {
+            display.innerHTML = dataItem
+            inputTextField.value = dataItem
+            console.log("dataitem: ", dataItem)
+        })
+        .catch( (error) =>
+        {
+            console.log(error)
+        })
+    }
+
+    // 2 Skriv till textfil från input
+    let getDataFromUser =()=>
+    {
+        let aText = editorCodeBlock.getValue()
+        fetch("./", {
+            method: "post",
+            headers: {
+                "Content-Type": "text/plain"
+                },
+            body: aText
+        })
+        .then(response =>
+        {
+            console.log("response: ",response.text())
+            display.innerText += "\n\nSENT"
+        })
+        .catch( (error) => { console.log(error)})
+    }
 
 // // läser in vad som skrivs i inputfield
 // let readDataFromUser = () =>

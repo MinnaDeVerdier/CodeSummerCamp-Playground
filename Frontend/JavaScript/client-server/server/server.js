@@ -4,6 +4,8 @@ import { dirname } from 'path';
 import path from 'path';
 import bodyParser from 'body-parser';
 
+import { spawn } from 'node:child_process';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
 const app = oExpress();
@@ -21,19 +23,33 @@ app.use(bodyParser.text({ type: 'text/plain'}))
 //     res.sendFile("./pages/index.html", { root: __dirname })
 // })
 
-// app.get(`/${page}`, (req, res) => {
-//     res.sendFile(`/files/instruction-${page}.txt`)
-// })
+//From https://nodejs.org/api/child_process.html#child-process
+
+let runPython =()=> {
+    const ls = spawn('sh python.sh');
+    ls.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+
+    ls.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    ls.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+}
 
 app.post("/", (req, res) => {
     writeToFile(req.body)
     res.send(`handled request: (${res.statusCode})`)
     console.log(req.body)
+    runPython()
 })
 
-import filestream from 'fs';
+import oFileStream from 'fs';
 let writeToFile = (aText) => {
-    filestream.writeFile("codefiles_temp/recievedText.txt", aText, (err) =>
+    oFileStream.writeFile("codefiles_temp/recievedText.txt", aText, (err) =>
     {
         if(err) return console.error(err)
         else console.log("Data written to file....")
