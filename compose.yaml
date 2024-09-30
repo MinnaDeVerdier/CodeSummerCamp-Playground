@@ -7,10 +7,12 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
+
+
 services:
-  server:
+  server_frontend:
     build:
-      context: .
+      context: ./Frontend/JavaScript/client-server
     environment:
       NODE_ENV: dev
     ports:
@@ -18,12 +20,31 @@ services:
     develop:
       watch:
       - action: sync
-        path: ./
+        path: ./Frontend/JavaScript/client-server
         target: /usr/src/app
-        # ignore:
-        #     - node_modules/
+        ignore:
+            - node_modules/
       - action: rebuild
         path: package.json
+    volumes:
+      - web-python-vol:/usr/src/app/codefiles
+  python_backend:
+    build:
+      context: ./Backend/Python
+    environment:
+      NODE_ENV: dev
+    ports:
+      - 5500:5500
+    develop:
+      watch:
+      - action: sync+restart
+        path: ./Backend/Python
+        target: /usr/src/app
+    volumes:
+      - web-python-vol:/usr/src/app/
+volumes:
+  web-python-vol:
+    name: "shared-server-python-volume"
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

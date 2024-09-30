@@ -1,9 +1,78 @@
-// let inputTextField = document.querySelector("#textInput")
-// let display = document.querySelector("#display")
-// let inputButton = document.querySelector("#inputButton")
+// Run code after html-page is loaded
+$(function() {
 
-// //inputButton.addEventListener("click", ()=>{ readDataFromUser(); })
-// inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
+let display = document.querySelector("#feedbackDisplay")
+let inputButton = document.querySelector("#runCodeButton")
+inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
+
+// Create editor
+    var codeContent = ["text = ''",
+        "if 1==1:",
+        "    text = 'Hello World'",
+        "else:",
+        "    text = 'Bye World'",
+        "print(text)",
+        "",
+        "while (true)",
+        "{",
+        "    //CODE HERE",
+        "    console.log(\"done\");",
+        "}",
+        "text = ''",
+        "if 1==1:",
+        "    text = 'Hello World'",
+        "else:",
+        "    text = 'Bye World'",
+        "print(text)",
+        "",
+        "while (true)",
+        "{",
+        "    //CODE HERE",
+        "    console.log(\"done\");",
+        "}",
+        "text = ''",
+        "if 1==1:",
+        "    text = 'Hello World'",
+        "else:",
+        "    text = 'Bye World'",
+        "print(text)",
+        "",
+        "while (true)",
+        "{",
+        "    //CODE HERE",
+        "    console.log(\"done\");",
+        "}",
+        "text = ''",
+        "if 1==1:",
+        "    text = 'Hello World'",
+        "else:",
+        "    text = 'Bye World'",
+        "print(text)",
+        "",
+        "while (true)",
+        "{",
+        "    //CODE HERE",
+        "    console.log(\"done\");",
+        "}"].join('\n')
+
+    let editorCodeBlock = monaco.editor.create(document.getElementById('codeEditor'), {
+        value: codeContent,
+        language: "python",
+        theme: "vs-dark",
+        lineNumbers: 'on',
+        glyphMargin: false,
+        vertical: 'auto',
+        horizontal: 'auto',
+        verticalScrollbarSize: 10,
+            horizontalScrollbarSize: 10,
+        scrollBeyondLastLine: false,
+        readOnly: false,
+        automaticLayout: true,
+        minimap: { 
+            enabled: true
+        },
+        lineHeight: 22,
+    });
 
 // // 1 Läs från textfil till display
 // let writeDataFromFile =()=>
@@ -26,28 +95,24 @@
 //     })
 // }
 
-// // 2 Skriv till textfil från input
-// let getDataFromUser =()=>
-// {
-//     let aText = inputTextField.value
-//     fetch("./", {
-//         method: "post",
-//         headers: {
-//             "Content-Type": "text/plain"
-//             },
-//         body: aText
-//     })
-//     .then( (response) =>
-//     {
-//         return response.text()
-//     })
-//     .then( (dataItem) =>
-//     {
-//         display.innerText = "Done"
-//         console.log(dataItem)
-//     })
-//     .catch( (error) => { console.log(error)})
-// }
+// 2 Skriv till textfil från input
+let getDataFromUser =()=>
+{
+    let aText = editorCodeBlock.getValue()
+    fetch("./", {
+        method: "post",
+        headers: {
+            "Content-Type": "text/plain"
+            },
+        body: aText
+    })
+    .then(response =>
+    {
+        console.log("response: ",response.text())
+        display.innerText += "\n\nSENT"
+    })
+    .catch( (error) => { console.log(error)})
+}
 
 // // läser in vad som skrivs i inputfield
 // let readDataFromUser = () =>
@@ -55,3 +120,4 @@
 //     let recievedData = inputTextField.value;
 //     display.textContent=recievedData;
 // }
+});
