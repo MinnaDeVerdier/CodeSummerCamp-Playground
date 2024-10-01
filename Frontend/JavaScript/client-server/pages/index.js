@@ -1,12 +1,35 @@
 let inputTextField = document.querySelector("#textInput")
-let display = document.querySelector("#display")
+let display = document.querySelector("#feedback-display")
 let inputButton = document.querySelector("#inputButton")
 let connectionButton = document.querySelector("#connectionButton")
+let containerButton = document.querySelector("#containerButton")
 //inputButton.addEventListener("click", ()=>{ readDataFromUser(); })
 inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
 
 connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
 
+//import require from "CommonJS";
+
+containerButton.addEventListener("click", ()=>{createContainer()})
+
+let createContainer =()=>{
+    fetch("./", {
+        method: "get",
+        headers: {
+            "Content-Type": "text/plain"
+            }
+    })
+    .then( (response) =>
+    {
+        console.log("respons get test eirtueirtu")
+        console.log(response)
+    })
+    .catch( (error) => { console.log(error)})
+}
+
+
+
+//OBS: Funkar inte
 let connectToBackend =()=>
     {
         //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn

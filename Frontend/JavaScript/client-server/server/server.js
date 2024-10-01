@@ -29,8 +29,8 @@ const port = 3000;
 //include folders in running server
 app.use('/css', oExpress.static(path.join(__dirname, '../css')));
 app.use(oExpress.static(path.join(__dirname, '../pages')));
-app.use(oExpress.static(path.join(__dirname, '../files')));
-
+app.use('/files', oExpress.static(path.join(__dirname, '../files')));
+app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
 
 //app.use(oExpress.json())
 
@@ -63,7 +63,15 @@ app.post("/", (aRequire, aResponse) =>
     writeToFile(aRequire.body)
    // console.log("POSTED!!!")
     console.log(aRequire.body)
-    runPython()
+    aResponse.send(`handled request: (${aResponse.statusCode})`)
+})
+
+app.get("./", (bRequire, bResponse) => {
+    console.log(bRequire)
+    console.log("rtyiurityurtyiou")
+    createContainer()
+    console.log("dfgdfjghdfkgh")
+    bResponse.send("ertueruthdjkgdjkfg")
 })
 
 import oFileStream from 'fs';
@@ -78,4 +86,22 @@ let writeToFile = (aText) =>
 
 app.listen(port, () => {
     console.log("server running at http://localhost:%s", port)
-})
+}) 
+
+function createContainer(){
+    console.log("export log here")
+    //Taget från https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
+    const ls = spawn('ls', ['-lh', '/usr']);
+
+    ls.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+
+    ls.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    ls.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+}

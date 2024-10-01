@@ -26,22 +26,22 @@ services:
         path: package.json
     volumes:
       - web-python-vol:/usr/src/app/files
-  python_backend:
-    build:
-      context: ./Backend/Python
-    environment:
-      NODE_ENV: dev
-    ports:
-      - 3001:3001
-    develop:
-      watch:
-      - action: sync
-        path: ./Backend/Python
-        target: /usr/src/app
+  #python_backend:
+    #build:
+      #context: ./Backend/Python
+    #environment:
+      #NODE_ENV: dev
+    #ports:
+      #- 3001:3001
+    #develop:
+      #watch:
+      #- action: sync
+        #path: ./Backend/Python
+        #target: /usr/src/app
         # ignore:
         #     - node_modules/
-    volumes:
-      - web-python-vol:/usr/src/app/python_files
+    #volumes:
+      #- web-python-vol:/usr/src/app/python_files
 volumes:
   web-python-vol:
 
