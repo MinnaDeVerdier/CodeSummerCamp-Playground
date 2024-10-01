@@ -1,6 +1,11 @@
 FROM python
 WORKDIR /usr/src/app
-COPY requirements.txt ./
-RUN /bin/sh -c pip install --no-cache-dir -r requirements.txt
+
+# If requirements contains modules to install
+#COPY requirements.txt ./ 
+#RUN /bin/sh -c pip install --no-cache-dir -r requirements.txt
+
 COPY . .
-CMD tail -f /dev/null
+
+# Keeps program running in background until shut down
+CMD ["tail", "-f", "/dev/null"]

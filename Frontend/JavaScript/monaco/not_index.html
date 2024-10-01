@@ -1,0 +1,117 @@
+<!--DOES NOT NEED NPM INSTALL jquery, monaco-editor, fetches from cdnjs
+   assumes node is available -->
+    
+<!DOCTYPE html>
+<html>
+    <head> 
+        <title>JS Node</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/editor/editor.main.min.css" integrity="sha512-9Z+3oQVvMWB3ovuf77qj2NN2LOPxH/s8xsoqg51817sUH3lYQTY2ciTmFc6Yd5plZ0HVJppkrvONeyMK7JYDrw==" referrerpolicy="no-referrer" crossorigin="anonymous"/>
+
+    </head>
+
+    <body>
+        <script>var require = { paths: {vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs'}};</script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/loader.min.js" integrity="sha512-ZG31AN9z/CQD1YDDAK4RUAvogwbJHv6bHrumrnMLzdCrVu4HeAqrUX7Jsal/cbUwXGfaMUNmQU04tQ8XXl5Znw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/editor/editor.main.js" integrity="sha512-PYWQWIaGcExhbmWC18uv2XPdrz+SKQEmICBAAy8SNoV4Nmrinw9wK9/TvpRv/MD85u0o8KjPt38zaza51zOr1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/basic-languages/javascript/javascript.min.js" integrity="sha512-iFYgjje28ScMj1Pc/u4qsMA//Mj7W+sIQwHsz7+cLbgZZdrsP+9RY8KsLMXAnSbep+LTKLb+Kw0c29kI/O1lMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.51.0/min/vs/basic-languages/python/python.min.js" integrity="sha512-npHMRnAJqA6QAdSVIkVZA7alyXzjtfDvwyRYIWjz7W3kXj77H5VVo6Z/9mZG5AWCkXacPkU0j12U2selDcP/Iw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+        <h1>Python Client</h1>
+        <p id="instruction">Write Code Here:</p>
+
+        <pre id="container">
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+text = ''
+if 1==1: 
+    text = 'Hello World'
+else:
+    text = 'Bye World'
+print(text)
+
+while (true) 
+{
+    //CODE HERE
+    console.log("done");
+}
+        </pre>
+
+        <p>End of Code</p>
+
+        <script>
+            var codeContent = $.trim($('#container').text());
+                $('#container').html('');
+    
+                var editorCodeBlock = monaco.editor.create(document.getElementById('container'), {
+                value: codeContent,
+                language: "python",
+                theme: "vs",
+                lineNumbers: 'on',
+                glyphMargin: false,
+                vertical: 'auto',
+                horizontal: 'auto',
+                verticalScrollbarSize: 10,
+                    horizontalScrollbarSize: 10,
+                scrollBeyondLastLine: false,
+                readOnly: false,
+                automaticLayout: true,
+                minimap: { 
+                    enabled: false
+                },
+                lineHeight: 15,
+            });
+            $("#container").height(400);
+        </script>
+
+        <p>End of Page</p>
+    </body>
+</html>

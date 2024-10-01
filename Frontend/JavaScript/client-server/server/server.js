@@ -1,18 +1,3 @@
-// let oHttp = require('http');
-// let url = require('url')
-// let filesystem = require('fs')
-
-// //Skapa http-server som aktiveras genom > node "filnamn.etx" i cmd
-// oHttp.createServer( (aRequest, aResponse) =>{
-//         filesystem.readFile('info.html', (err, data) => {
-//                 if(err) return console.error(err)
-//                 aResponse.writeHead(200, {'Content-Type': 'text/html'});
-//                 aResponse.write(data);
-//                 aResponse.end();        
-//             })
-//         }).listen(8080);
-// })
-
 import oExpress from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -22,29 +7,64 @@ import bodyParser from 'body-parser';
 import { spawn } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(dirname(__filename));
 const app = oExpress();
 const port = 3000;
 
 //include folders in running server
-app.use('/css', oExpress.static(path.join(__dirname, '../css')));
-app.use(oExpress.static(path.join(__dirname, '../pages')));
-app.use('/files', oExpress.static(path.join(__dirname, '../files')));
+app.use('/css', oExpress.static(path.join(__dirname, 'css')));
+app.use(oExpress.static(path.join(__dirname, 'pages')));
+app.use('/codefiles', oExpress.static(path.join(__dirname, 'codefiles')));
+app.use('/images', oExpress.static(path.join(__dirname, 'images')));
 app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
-
-//app.use(oExpress.json())
+//app.use('/server', oExpress.static(path.join(__dirname, 'server')));
 
 app.use(bodyParser.text({ type: 'text/plain'}))
 
-// app.get("/", (aRequire, aResponse) =>
-// {
-//     aResponse.sendFile("./pages/index.html", { root: __dirname })
+// app.get('/', (req, res) => {
+//     res.sendFile("./pages/index.html", { root: __dirname })
 // })
 
 //From https://nodejs.org/api/child_process.html#child-process
 
+app.mkactivity("/", (req, res) => {
+    writeToFile(req.body)
+    res.send(`handled request: (${res.statusCode})`)
+    console.log(req.body)
+    runPython()
+})
+
+app.post("/", (req, res) => {
+    writeToFile(req.body)
+    res.send(`handled request: (${res.statusCode})`)
+    console.log(req.body)
+    runPython()
+})
+
+import oFileStream from 'fs';
+let writeToFile = (aText) => {
+    oFileStream.writeFile("codefiles/recievedText.txt", aText, (err) =>
+    {
+        if(err) return console.error(err)
+        else console.log("Data written to file....")
+    })
+}
+
+let connectToBackend =()=>
+{
+    //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
+    filePath = "./files/testText.txt";
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+        // when the reader is done, the content is in reader.result.
+        console.log(reader.result);
+    };
+    reader.readAsText(this.files[0]);
+}
+
+
 let runPython =()=> {
-    const ls = spawn('sh python.sh');
+    const ls = spawn('sh', ['server/python.sh']);
     ls.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
     });
@@ -74,15 +94,6 @@ app.get("./", (bRequire, bResponse) => {
     bResponse.send("ertueruthdjkgdjkfg")
 })
 
-import oFileStream from 'fs';
-let writeToFile = (aText) =>
-{
-    oFileStream.writeFile("files/recievedText.txt", aText, (err) =>
-    {
-        if(err) return console.error(err)
-        else console.log("Data written to file....")
-    })
-}
 
 app.listen(port, () => {
     console.log("server running at http://localhost:%s", port)
