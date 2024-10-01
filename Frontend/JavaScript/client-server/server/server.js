@@ -17,6 +17,8 @@ app.use(oExpress.static(path.join(__dirname, 'pages')));
 app.use('/codefiles', oExpress.static(path.join(__dirname, 'codefiles')));
 app.use('/images', oExpress.static(path.join(__dirname, 'images')));
 app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
+//app.use('/server', oExpress.static(path.join(__dirname, 'server')));
+
 app.use(bodyParser.text({ type: 'text/plain'}))
 
 // app.get('/', (req, res) => {
@@ -25,8 +27,44 @@ app.use(bodyParser.text({ type: 'text/plain'}))
 
 //From https://nodejs.org/api/child_process.html#child-process
 
+app.mkactivity("/", (req, res) => {
+    writeToFile(req.body)
+    res.send(`handled request: (${res.statusCode})`)
+    console.log(req.body)
+    runPython()
+})
+
+app.post("/", (req, res) => {
+    writeToFile(req.body)
+    res.send(`handled request: (${res.statusCode})`)
+    console.log(req.body)
+    runPython()
+})
+
+import oFileStream from 'fs';
+let writeToFile = (aText) => {
+    oFileStream.writeFile("codefiles/recievedText.txt", aText, (err) =>
+    {
+        if(err) return console.error(err)
+        else console.log("Data written to file....")
+    })
+}
+
+let connectToBackend =()=>
+{
+    //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
+    filePath = "./files/testText.txt";
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+        // when the reader is done, the content is in reader.result.
+        console.log(reader.result);
+    };
+    reader.readAsText(this.files[0]);
+}
+
+
 let runPython =()=> {
-    const ls = spawn('sh python.sh');
+    const ls = spawn('sh', ['server/python.sh']);
     ls.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
     });
@@ -38,22 +76,6 @@ let runPython =()=> {
     ls.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
     });
-}
-
-app.post("/", (req, res) => {
-    writeToFile(req.body)
-    res.send(`handled request: (${res.statusCode})`)
-    console.log(req.body)
-    runPython()
-})
-
-import oFileStream from 'fs';
-let writeToFile = (aText) => {
-    oFileStream.writeFile("codefiles_temp/recievedText.txt", aText, (err) =>
-    {
-        if(err) return console.error(err)
-        else console.log("Data written to file....")
-    })
 }
 
 app.listen(port, () => {

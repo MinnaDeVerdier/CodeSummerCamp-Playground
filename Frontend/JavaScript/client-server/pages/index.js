@@ -4,9 +4,6 @@ $(function() {
     let inputButton = document.querySelector("#runCodeButton")
     let connectionButton = document.querySelector("#connectionButton")
     //let inputTextField = document.querySelector("#textInput")
-    inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
-
-    connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
 
     // Create editor
     var codeContent = ["text = ''",
@@ -77,17 +74,8 @@ $(function() {
         lineHeight: 22,
     });
 
-    let connectToBackend =()=>
-    {
-        //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
-        filePath = "./files/testText.txt";
-        const reader = new FileReader();
-        reader.onload = function fileReadCompleted() {
-            // when the reader is done, the content is in reader.result.
-            console.log(reader.result);
-        };
-        reader.readAsText(this.files[0]);
-    }
+    inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
+    connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
 
     // 1 Läs från textfil till display
     let writeDataFromFile =()=>
