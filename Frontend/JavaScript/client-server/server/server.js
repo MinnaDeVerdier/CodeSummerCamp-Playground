@@ -3,8 +3,9 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
 import bodyParser from 'body-parser';
-
 import { spawn } from 'node:child_process';
+import session, { MemoryStore } from 'express-session';
+import { randomUUID } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
@@ -18,35 +19,76 @@ app.use('/codefiles', oExpress.static(path.join(__dirname, 'codefiles')));
 app.use('/images', oExpress.static(path.join(__dirname, 'images')));
 app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
 //app.use('/server', oExpress.static(path.join(__dirname, 'server')));
-
 app.use(bodyParser.text({ type: 'text/plain'}))
 
-// app.get('/', (req, res) => {
-//     res.sendFile("./pages/index.html", { root: __dirname })
+// FROM https://expressjs.com/en/resources/middleware/session.html
+
+// Use COOKIES for recognizing sessions
+app.use(session({
+    secret: 'secret-key', // Set in container env variables. should be an array where top is current secrets and older ones further down (to not close active sessions on change)
+    name: 'CSCsessionID', // ID-name, same for all
+    resave: false, //check with storage if it implements the touch method. If it does, set resave: false. If it does not and your store sets an expiration date on stored sessions, you likely need resave: true
+    saveUninitialized: true, //should be false, gdpr need permissions for cookies on client-side
+    cookie: { 
+        secure: true, // secure: true means cookies are only sent over https.
+        maxAge: 1000 * 60 * 60 * 24 * 7 // Expires after seven days
+    },
+    genid: function(req) {
+        return randomUUID(); // using crypto module to generate session ID
+    }
+    // store: // default MemoryStore leaky and unsafe, find options
+}));
+
+// Future function when login implemented
+// app.get('/logout', (req, res) => {
+//     req.session.destroy((err) => { // Destroys cookie/session on logout
+//         if (err) {
+//             console.log(err);
+//         }
+//         res.redirect('/login');
+//     });
+// });
+
+// // OR Use HEADER to identify the session for all calls
+// app.use((req, res, next) => {
+//     const sessionId = req.headers['X-session-ID'];
+//     next();
+// });
+
+// app.mkactivity("/", (req, res) => {
+//     writeToFile(req.body)
+//     res.send(`handled request: (${res.statusCode})`)
+//     console.log(req.body)
+//     runPython()
 // })
 
-//From https://nodejs.org/api/child_process.html#child-process
-
-app.mkactivity("/", (req, res) => {
-    writeToFile(req.body)
-    res.send(`handled request: (${res.statusCode})`)
-    console.log(req.body)
-    runPython()
-})
-
 app.post("/", (req, res) => {
-    writeToFile(req.body)
+    console.log('Session data:', req.session);
+    console.log('req.sessionID: ', req.sessionID)
+    console.log('req.params: ', req.params)
+
+    writeToFile(req)
     res.send(`handled request: (${res.statusCode})`)
     console.log(req.body)
-    runPython()
+  //  runPython()
 })
 
 import oFileStream from 'fs';
-let writeToFile = (aText) => {
-    oFileStream.writeFile("codefiles/recievedText.txt", aText, (err) =>
+let writeToFile = (req) => {
+    let lang = 1 //python3.12
+    let dataToContainerStarter = {
+        "sent": { 
+            "id": req.sessionID, 
+            "language": lang,
+            "installs": ["numpy", "pandas", "jquery"], 
+            "code": req.body,
+            "data": "exempel-data testdata-länk osv"
+    }}
+    
+    oFileStream.writeFile(`codefiles/${req.sessionID}.json`, JSON.stringify(dataToContainerStarter), (err) =>
     {
-        if(err) return console.error(err)
-        else console.log("Data written to file....")
+        if(err) console.log(err)
+        else console.log("Data written to file.... ", dataToContainerStarter)
     })
 }
 
@@ -62,6 +104,7 @@ let connectToBackend =()=>
     reader.readAsText(this.files[0]);
 }
 
+//From https://nodejs.org/api/child_process.html#child-process
 
 let runPython =()=> {
     const ls = spawn('sh', ['server/python.sh']);

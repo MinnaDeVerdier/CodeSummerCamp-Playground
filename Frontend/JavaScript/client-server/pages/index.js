@@ -78,29 +78,42 @@ $(function() {
     inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
     connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
 
-//import require from "CommonJS";
+    containerButton.addEventListener("click", ()=>{createContainer()})
 
-containerButton.addEventListener("click", ()=>{createContainer()})
-
-let createContainer =()=>{
-    fetch("./", {
-        method: "get",
-        headers: {
-            "Content-Type": "text/plain"
-            }
-    })
-    .then( (response) =>
+    let createContainer =()=>{
+        fetch("./", {
+            method: "get",
+            headers: {
+                "Content-Type": "text/plain"
+                }
+        })
+        .then( (response) =>
+        {
+            console.log("respons get test eirtueirtu")
+            console.log(response)
+        })
+        .catch( (error) => { console.log(error)})
+    }
+    let connectToBackend =()=>
     {
-        console.log("respons get test eirtueirtu")
-        console.log(response)
-    })
-    .catch( (error) => { console.log(error)})
-}
+        fetch("./", {
+            method: "head",
+            headers: {
+                "Content-Type": "text/plain"
+                }
+        })
+        .then( (response) =>
+        {
+            console.log("respons index head")
+            console.log(response)
+        })
+        .catch( (error) => { console.log(error)})
+    }
 
     // 1 Läs från textfil till display
     let writeDataFromFile =()=>
     {
-        fetch("./files/savefile.txt")
+        fetch("./")
         .then( (response) => 
         {
             console.log("response: ",response.text)
@@ -122,12 +135,14 @@ let createContainer =()=>{
     let getDataFromUser =()=>
     {
         let aText = editorCodeBlock.getValue()
-        fetch("./", {
+        fetch("./", {               // use path for language selection? 
             method: "post",
             headers: {
                 "Content-Type": "text/plain"
+                //  'X-Session-ID': 'unique-session-identifier'    // if cookies dont work use HEADERs for session ID
                 },
-            body: aText
+        // useable for installs?   params: ["para1", "para2"], 
+            body: aText //modify to contain more metadata
         })
         .then(response =>
         {

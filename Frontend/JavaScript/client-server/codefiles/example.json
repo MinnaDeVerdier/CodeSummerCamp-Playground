@@ -1,0 +1,17 @@
+{
+    "sent": { 
+        "id": "g4g4g", 
+        "language": "Python.3.12",
+        "installs": ["numpy", "pandas", "jquery"], 
+        "code": "hela kod-dokumentet",
+        "data": "exempel-data testdata-länk osv"
+    },
+    "returned": {
+        "id": "g4g4g",
+        "language": "Python.3.12",
+        "installs": ["numpy", "pandas", "jquery"],
+        "result": "result output text",
+        "testresultPassed": true,
+        "testresultData": "errormessage/result"
+    }
+}
