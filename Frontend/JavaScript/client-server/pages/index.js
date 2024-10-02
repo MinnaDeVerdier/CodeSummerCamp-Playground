@@ -97,41 +97,6 @@ let createContainer =()=>{
     .catch( (error) => { console.log(error)})
 }
 
-
-
-//OBS: Funkar inte
-let connectToBackend =()=>
-    {
-        //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
-        filePath = "./files/testText.txt";
-        const reader = new FileReader();
-        reader.onload = function fileReadCompleted() {
-            // when the reader is done, the content is in reader.result.
-            console.log(reader.result);
-          };
-          reader.readAsText(this.files[0]);
-    }
-
-// 1 Läs från textfil till display
-let writeDataFromFile =()=>
-{
-    fetch("./files/savefile.txt")
-    .then( (response) => 
-    {
-        console.log("response: ",response.text)
-        return response.text()
-    })
-    .then( (dataItem) =>
-    {
-        display.innerHTML = dataItem
-        inputTextField.value = dataItem
-        console.log("dataitem: ", dataItem)
-    })
-    .catch( (error) =>
-    {
-        console.log(error)
-    })
-}
     // 1 Läs från textfil till display
     let writeDataFromFile =()=>
     {

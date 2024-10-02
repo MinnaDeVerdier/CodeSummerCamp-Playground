@@ -1,3 +1,4 @@
-"docker compose exec python_backend sh"
-"python testPython.py"
-"exit"
+echo "test att sh filen körs"
+which bash
+touch hello_world.sh
+dockerd

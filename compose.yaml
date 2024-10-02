@@ -28,6 +28,27 @@ services:
         path: package.json
     volumes:
       - web-python-vol:/usr/src/app/codefiles
+  dind:
+    build: 
+      context: ./Frontend/Dind
+    environment:
+      NODE_ENV: dev
+    ports:
+      - 3002:3002
+    develop:
+      watch:
+      - action: sync
+        path: ./Frontend/Dind
+        target: /usr/src/app
+        ignore:
+            - node_modules/
+      - action: rebuild
+        path: package.json
+    volumes:
+      - web-python-vol:/usr/src/app/codefiles
+      - docker-in-docker:/usr/src/app
+    privileged: true
+
   #python_backend:
     #build:
       #context: ./Backend/Python
@@ -45,6 +66,8 @@ services:
 volumes:
   web-python-vol:
     name: "shared-server-python-volume"
+  docker-in-docker:
+    name: "docker-in-docker-volume"
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

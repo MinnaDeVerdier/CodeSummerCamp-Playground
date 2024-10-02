@@ -78,14 +78,6 @@ let runPython =()=> {
     });
 }
 
-app.post("/", (aRequire, aResponse) =>
-{
-    writeToFile(aRequire.body)
-   // console.log("POSTED!!!")
-    console.log(aRequire.body)
-    aResponse.send(`handled request: (${aResponse.statusCode})`)
-})
-
 app.get("./", (bRequire, bResponse) => {
     console.log(bRequire)
     console.log("rtyiurityurtyiou")
