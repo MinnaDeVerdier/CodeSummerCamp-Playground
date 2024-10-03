@@ -8,4 +8,4 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Keeps program running in background until shut down
-#CMD ["tail", "-f", "/de#v/null"]
+#CMD ["tail", "-f", "/dev/null"]
