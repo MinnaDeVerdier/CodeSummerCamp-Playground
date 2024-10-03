@@ -70,7 +70,7 @@ app.post("/", (req, res) => {
     writeToFile(req)
     res.send(`handled request: (${res.statusCode})`)
     console.log(req.body)
-  //  runPython()
+    runPython()
 })
 
 import oFileStream from 'fs';
