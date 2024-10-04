@@ -16,4 +16,3 @@ do
     fi
     echo "...listening..."
 done
-echo "...LISTENER END..."

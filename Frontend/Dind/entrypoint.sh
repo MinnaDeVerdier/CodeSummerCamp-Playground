@@ -8,7 +8,7 @@ echo "...STARTING DOCKERD..."
 # Wait for the Docker daemon to start BROKEN???
 # while ! docker info >/dev/null 2>&1; do
 echo "...WAITING for Docker daemon to start...\n"
-sleep 60
+sleep 10
 #done
 
 echo "...OPENING LISTENER..."
