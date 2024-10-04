@@ -40,10 +40,6 @@ services:
       - action: sync
         path: ./Frontend/Dind
         target: /usr/src/app
-        ignore:
-            - node_modules/
-      - action: rebuild
-        path: package.json
     volumes:
       - web-python-vol:/usr/src/app/codefiles
       - docker-in-docker:/usr/src/app

@@ -30,12 +30,12 @@ app.use(session({
     resave: false, //check with storage if it implements the touch method. If it does, set resave: false. If it does not and your store sets an expiration date on stored sessions, you likely need resave: true
     saveUninitialized: true, //should be false, gdpr need permissions for cookies on client-side
     cookie: { 
-        secure: true, // secure: true means cookies are only sent over https.
+        secure: false, // secure: true means cookies are only sent over https.
         maxAge: 1000 * 60 * 60 * 24 * 7 // Expires after seven days
     },
-    genid: function(req) {
-        return randomUUID(); // using crypto module to generate session ID
-    }
+    // genid: function(req) {
+    //     return randomUUID(); // using crypto module to generate session ID? else default generator
+    // }
     // store: // default MemoryStore leaky and unsafe, find options
 }));
 
@@ -70,7 +70,7 @@ app.post("/", (req, res) => {
     writeToFile(req)
     res.send(`handled request: (${res.statusCode})`)
     console.log(req.body)
-    runPython()
+//    runPython()
 })
 
 import oFileStream from 'fs';
