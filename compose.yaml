@@ -19,7 +19,7 @@ services:
       - 3000:3000
     develop:
       watch:
-      - action: sync
+      - action: sync+restart
         path: ./Frontend/JavaScript/client-server
         target: /usr/src/app
         ignore:

@@ -4,13 +4,15 @@ import { dirname } from 'path';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { spawn } from 'node:child_process';
-import session, { MemoryStore } from 'express-session';
-import { randomUUID } from 'crypto';
+//import session, { MemoryStore } from 'express-session';
+import session from 'cookie-session';
+import {randomUUID} from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
 const app = oExpress();
 const port = 3000;
+
 
 //include folders in running server
 app.use('/css', oExpress.static(path.join(__dirname, 'css')));
@@ -21,23 +23,34 @@ app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
 //app.use('/server', oExpress.static(path.join(__dirname, 'server')));
 app.use(bodyParser.text({ type: 'text/plain'}))
 
-// FROM https://expressjs.com/en/resources/middleware/session.html
-
-// Use COOKIES for recognizing sessions
+// Use TEMPORARY COOKIES for sessions
 app.use(session({
-    secret: 'secret-key', // Set in container env variables. should be an array where top is current secrets and older ones further down (to not close active sessions on change)
-    name: 'CSCsessionID', // ID-name, same for all
-    resave: false, //check with storage if it implements the touch method. If it does, set resave: false. If it does not and your store sets an expiration date on stored sessions, you likely need resave: true
-    saveUninitialized: true, //should be false, gdpr need permissions for cookies on client-side
-    cookie: { 
-        secure: false, // secure: true means cookies are only sent over https.
-        maxAge: 1000 * 60 * 60 * 24 * 7 // Expires after seven days
-    },
-    // genid: function(req) {
-    //     return randomUUID(); // using crypto module to generate session ID? else default generator
-    // }
-    // store: // default MemoryStore leaky and unsafe, find options
-}));
+    name: 'CSCsession', 
+    keys: ['secret-key', 'old-key'], // OR use secret, for only one option
+    maxAge: 1000 * 60 * 60 * 12 //expires after 12 hours or on browser close
+}))
+
+// Generate a unique session ID if one doesn't exist
+app.use((req, res, next) => {
+    if (!req.session.id) {
+      req.session.id = randomUUID();
+    }
+    next();
+  });
+
+// Use PERSISTING COOKIES for recognizing sessions
+// FROM https://expressjs.com/en/resources/middleware/session.html
+// app.use(session({
+//     secret: 'secret-key', // Set in container env variables. should be an array where top is current secrets and older ones further down (to not close active sessions on change)
+//     name: 'CSCsessionID', // ID-name, same for all
+//     resave: false, //check with storage if it implements the touch method. If it does, set resave: false. If it does not and your store sets an expiration date on stored sessions, you likely need resave: true
+//     saveUninitialized: true, //should be false, gdpr need permissions for cookies on client-side
+//     cookie: { 
+//         secure: false, // secure: true means cookies are only sent over https.
+//         maxAge: 1000 * 60 * 60 * 12 // Expires after 12 hours
+//     },
+//     //store: // default MemoryStore leaky and unsafe
+// }));
 
 // Future function when login implemented
 // app.get('/logout', (req, res) => {
@@ -64,7 +77,7 @@ app.use(session({
 
 app.post("/", (req, res) => {
     console.log('Session data:', req.session);
-    console.log('req.sessionID: ', req.sessionID)
+    console.log('req.sessionID: ', req.session.id)
     console.log('req.params: ', req.params)
 
     writeToFile(req)
@@ -75,17 +88,17 @@ app.post("/", (req, res) => {
 
 import oFileStream from 'fs';
 let writeToFile = (req) => {
-    let lang = 1 //python3.12
+    let lang = 1 //1 = python3.12 
     let dataToContainerStarter = {
         "sent": { 
-            "id": req.sessionID, 
+            "id": req.session.id, 
             "language": lang,
             "installs": ["numpy", "pandas", "jquery"], 
             "code": req.body,
             "data": "exempel-data testdata-länk osv"
     }}
     
-    oFileStream.writeFile(`codefiles/${req.sessionID}.json`, JSON.stringify(dataToContainerStarter), (err) =>
+    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainerStarter), (err) =>
     {
         if(err) console.log(err)
         else console.log("Data written to file.... ", dataToContainerStarter)

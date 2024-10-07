@@ -14,7 +14,9 @@ FROM base as dev
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
+    npm ci --include=dev 
+RUN npm install express
+RUN npm install cookie-session
 #USER root
 #Installs docker in the image. doesnt really work at all, since daemons and stuff dont work.
 #RUN curl -fsSL https://get.docker.com/ -o install-docker.sh
