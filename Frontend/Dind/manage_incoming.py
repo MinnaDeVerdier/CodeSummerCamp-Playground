@@ -12,15 +12,14 @@ with open(instructionFile) as Jfile:
     print('...LOADED INSTRUCTION...')
 
 for key, value in instruction.items():
-    print(f"...{key}: {value}\n")
+    print(f"...{key}: {value}")
 
 match instruction["sent"]["language"]:
     case 1:
         print('...OPENING CONTAINER...')
-        subprocess.run(['sh', '/usr/src/app/pythonSetup/create_python.sh'])
+        res = subprocess.run(['sh', '/usr/src/app/pythonSetup/create_python.sh', instruction["sent"]["code"], instruction["sent"]["id"]])
+        print(f"...SUBPROCESS RES... ${res}...")
     case default:
         print("...CONTAINER FAIL...language not available")
 
 print("...MANAGER END...")
-
-   #sh /usr/src/app/pythonSetup/create_python.sh "$directory" "$event" "$file"
