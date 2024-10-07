@@ -1,1 +1,1 @@
-print ("Test att python filer fungerar i containern")
+#Empty file that gets user input written to it
