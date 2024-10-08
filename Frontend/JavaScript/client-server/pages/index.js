@@ -2,8 +2,11 @@
 $(function() {
     let display = document.querySelector("#feedbackDisplay")
     let inputButton = document.querySelector("#runCodeButton")
+    let resultButton = document.querySelector("#inputResultButton")
+    /*
     let connectionButton = document.querySelector("#connectionButton")
     let containerButton = document.querySelector("#containerButton")
+    */
     //let inputTextField = document.querySelector("#textInput")
 
     // Create editor
@@ -76,8 +79,10 @@ $(function() {
     });
 
     inputButton.addEventListener("click", ()=>{ getDataFromUser(); })
-    connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
+    resultButton.addEventListener("click", ()=>{ getUserResult(); })
 
+    /*
+    connectionButton.addEventListener("click", ()=>{ connectToBackend(); })
     containerButton.addEventListener("click", ()=>{createContainer()})
 
     let createContainer =()=>{
@@ -109,26 +114,23 @@ $(function() {
         })
         .catch( (error) => { console.log(error)})
     }
+    */
 
     // 1 Läs från textfil till display
-    let writeDataFromFile =()=>
+    let getUserResult =()=>
     {
-        fetch("./")
-        .then( (response) => 
-        {
-            console.log("response: ",response.text)
-            return response.text()
+        fetch("./", {
+            method: "get",
+            headers: {
+                "Content-Type": "text/plain"
+                }
         })
-        .then( (dataItem) =>
+        .then( (response) =>
         {
-            display.innerHTML = dataItem
-            inputTextField.value = dataItem
-            console.log("dataitem: ", dataItem)
+            console.log("get response: ", response.text)
+            display.innerText = response.text
         })
-        .catch( (error) =>
-        {
-            console.log(error)
-        })
+        .catch( (error) => { console.log(error)})
     }
 
     // 2 Skriv till textfil från input

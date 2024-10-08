@@ -1,6 +1,7 @@
 code="$1"
 id="$2"
 echo "SHORTCUTS code: $code id: $id"
+echo "$1 : kod sträng här?"
 
 # Check if image exists, else build. Redirects output to null, to remove unneccessary logs
 if docker image inspect python_test_image >/dev/null;  then
@@ -13,8 +14,8 @@ else
 fi
 
 # Save code to python-file
-echo $code > /usr/src/app/pythonsetup/pythontest.py
-echo $code > /usr/src/app/pythonsetup/pythonText.txt
+#echo $code > /usr/src/app/pythonsetup/pythontest.py
+#echo $code > /usr/src/app/pythonsetup/pythonText.txt
 
 # Check if the container already exists, if not, create it. Redirects output to null, to remove unneccessary logs
 if docker container inspect "python_$id" >/dev/null; then
@@ -26,8 +27,8 @@ else
 fi
 docker container ps -a
 
-#Byt ut testfilen med ett nytt program som gör test av input
-docker exec "python_$id" sh -c "python pythontest.py"
+#Kör användarens python-kod som ligger i pythontest.py. Tror jag? Vet inte om det fungerar, det skrivs inte ut nåt i konsolen.
+docker exec python_$id sh -c "python pythontest.py"
 
 #docker exec "python_$id" python3 -c "$code"
 #docker container rm -f python_container

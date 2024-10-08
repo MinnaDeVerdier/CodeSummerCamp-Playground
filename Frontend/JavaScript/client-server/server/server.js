@@ -98,13 +98,24 @@ let writeToFile = (req) => {
             "data": "exempel-data testdata-länk osv"
     }}
     
-    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainerStarter), (err) =>
+    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainerStarter, null, 4), (err) =>
     {
         if(err) console.log(err)
         else console.log("Data written to file.... ", dataToContainerStarter)
     })
 }
 
+app.get("./", (bRequire, bResponse) => {
+    console.log(bRequire)
+    bResponse.send("ertueruthdjkgdjkfg")
+})
+
+
+app.listen(port, () => {
+    console.log("server running at http://localhost:%s", port)
+}) 
+
+/*
 let connectToBackend =()=>
 {
     //från https://dev.to/g33konaut/reading-local-files-with-javascript-25hn
@@ -134,19 +145,6 @@ let runPython =()=> {
     });
 }
 
-app.get("./", (bRequire, bResponse) => {
-    console.log(bRequire)
-    console.log("rtyiurityurtyiou")
-    createContainer()
-    console.log("dfgdfjghdfkgh")
-    bResponse.send("ertueruthdjkgdjkfg")
-})
-
-
-app.listen(port, () => {
-    console.log("server running at http://localhost:%s", port)
-}) 
-
 function createContainer(){
     console.log("export log here")
     //Taget från https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
@@ -164,3 +162,4 @@ function createContainer(){
         console.log(`child process exited with code ${code}`);
     });
 }
+*/
