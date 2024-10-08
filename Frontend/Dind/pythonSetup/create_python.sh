@@ -8,7 +8,7 @@ if docker image inspect python_test_image >/dev/null;  then
     docker image ls
 else
     echo "...building new image..."
-    docker image build -t python_test_image /usr/src/app/pythonSetup
+    docker image build -t python_test_image /usr/src/app/pythonsetup
 #    docker image build -t python_test_image /usr/src/app/pythonsetup
 fi
 
