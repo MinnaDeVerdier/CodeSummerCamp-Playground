@@ -1,7 +1,7 @@
 code="$1"
 id="$2"
 echo "SHORTCUTS code: $code id: $id"
-echo "$1 : kod sträng här?"
+echo "$1 : "
 
 # Check if image exists, else build. Redirects output to null, to remove unneccessary logs
 if docker image inspect python_test_image >/dev/null;  then
@@ -23,12 +23,15 @@ if docker container inspect "python_$id" >/dev/null; then
     docker container start "python_$id"
 else
     echo "... creating container..."
-    docker run --mount type=bind,source=/usr/src/app/codefiles,target=/usr/src/app/codefiles,readonly --mount type=bind,source=/usr/src/app/pythonsetup,target=/usr/src/app/ -it --detach --name "python_$id" python_test_image
+    #ta bort readonly fron den första mounten? annars kan jag inte skriva pythonoutputen till en fil för webbserverns åtkomst.
+    docker run --mount type=bind,source=/usr/src/app/codefiles,target=/usr/src/app/codefiles --mount type=bind,source=/usr/src/app/pythonsetup,target=/usr/src/app/ -it --detach --name "python_$id" python_test_image
 fi
 docker container ps -a
 
-#Kör användarens python-kod som ligger i pythontest.py. Tror jag? Vet inte om det fungerar, det skrivs inte ut nåt i konsolen.
-docker exec python_$id sh -c "python pythontest.py"
+#Kör användarens python-kod som ligger i pythontest.py. 
+#CTRLV in i dind container och kör kommandot så skrivs pythonfilens output till textfilen, men det funkar inte genom sh?
+#testoutput.txt blir alltid tom efter att man kör create_python.sh
+docker exec python_$id sh -c "python pythontest.py > codefiles/testoutput.txt 2>&1"
 
 #docker exec "python_$id" python3 -c "$code"
 #docker container rm -f python_container
