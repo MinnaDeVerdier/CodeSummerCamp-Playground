@@ -37,11 +37,6 @@ a:active {
     color: #1A33F5;
 } 
 
-a#title {
-    color: #7CF7F9;
-    text-decoration: unset;
-}
-
 .nav-bar{
     background-color: #000B3D;
     width: 100%;
@@ -62,7 +57,12 @@ a#title {
 	text-decoration: none;
 }
 
-.page_container {
+a#nav-title {
+    color: #7CF7F9;
+    text-decoration: unset;
+}
+
+.page-container {
     padding-left: 10px;
     box-sizing: border-box;
 }

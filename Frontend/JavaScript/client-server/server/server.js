@@ -22,6 +22,7 @@ app.use('/images', oExpress.static(path.join(__dirname, 'images')));
 app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
 //app.use('/server', oExpress.static(path.join(__dirname, 'server')));
 app.use(bodyParser.text({ type: 'text/plain'}))
+app.use(bodyParser.json({ type: 'application/json'}))
 
 // Use TEMPORARY COOKIES for sessions
 app.use(session({
@@ -74,6 +75,34 @@ app.use((req, res, next) => {
 //     console.log(req.body)
 //     runPython()
 // })
+
+app.get('/playground', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'playground.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'login.html'));
+});
+
+app.get('/assignmentData/:assignmentID', (req, res) => {
+    console.log("assID: ", req.params.assignmentID)
+    oFileStream.readFile(path.join(__dirname, 'files', 'assignmentData.json'), 'utf8', (err, data) => {
+        if(err) 
+            console.log(err)
+        
+        let jstring=JSON.parse(data)
+        let assignmentjson = {"status": "Assignment doesnt exist"}
+        
+        for (var item in jstring) {            
+            if (item == req.params.assignmentID)
+                assignmentjson = jstring[item]
+            console.log("---TITLE---", jstring[item]["title"])
+        }
+        console.log(assignmentjson)
+        res.send(assignmentjson)
+    })
+  //  res.sendFile(path.join(__dirname, 'files', 'assignmentData.json'));
+});
 
 app.post("/", (req, res) => {
     console.log('Session data:', req.session);
