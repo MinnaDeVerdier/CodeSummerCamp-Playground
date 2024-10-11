@@ -19,16 +19,18 @@ services:
       - 3000:3000
     develop:
       watch:
-      - action: sync+restart
+      - action: sync
         path: ./Frontend/JavaScript/client-server
         target: /usr/src/app
         ignore:
             - node_modules/
+      - action: sync+restart
+        path: ./Frontend/JavaScript/client-server/server
+        target: /usr/src/app/server
       - action: rebuild
         path: package.json
     volumes:
       - web-python-vol:/usr/src/app/codefiles
-      - user-output:/usr/src/app/outputfiles
   dind:
     build: 
       context: ./Frontend/Dind
@@ -41,6 +43,9 @@ services:
       - action: sync
         path: ./Frontend/Dind
         target: /usr/src/app
+      # - action: rebuild
+      #   path: ./Frontend/Dind/service
+      #   target: /usr/src/app/service
     volumes:
       - web-python-vol:/usr/src/app/codefiles
       - docker-in-docker:/usr/src/app
