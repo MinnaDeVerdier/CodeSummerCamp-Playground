@@ -23,14 +23,10 @@ if docker container inspect "python_$id" >/dev/null; then
     docker container start "python_$id"
 else
     echo "... creating container..."
-    docker run --mount type=bind,source=/usr/src/app/codefiles,target=/usr/src/app/codefiles,readonly --mount type=bind,source=/usr/src/app/pythonsetup,target=/usr/src/app -it --detach --name "python_$id" python_test_image
+    docker run --mount type=bind,source=/usr/src/app/codefiles,target=/usr/src/app/codefiles,readonly --mount type=bind,source=/usr/src/app/pythonsetup,target=/usr/src/app --mount type=bind,source=/usr/src/app/outputfiles,target=/usr/src/app/outputfiles -it --detach --name "python_$id" python_test_image
 fi
 docker container ps -a
 
 #Kör användarens python-kod som ligger i pythontest.py. 
-#CTRLV in i dind container och kör kommandot så skrivs pythonfilens output till textfilen, men det funkar inte genom sh?
-#testoutput.txt blir alltid tom efter att man kör create_python.sh
-docker exec python_$id sh -c "python runinput.py"
+docker exec -d python_$id sh -c "python runinput.py"
 
-#docker exec "python_$id" python3 -c "$code"
-#docker container rm -f python_container
