@@ -10,7 +10,7 @@ do
     if [ -f "$file" ]; then
         echo "...OPENING MANAGER..."
         # Starts manager and redirects output to logs
-        python3 manage_incoming.py "$file" >> /usr/src/app/logs/pyLog.log
+        python3 /usr/src/app/manage_incoming.py "$file" >> /usr/src/app/logs/pyLog.log 2>&1
         echo "...manager started"
     fi
     echo "...listening..."
