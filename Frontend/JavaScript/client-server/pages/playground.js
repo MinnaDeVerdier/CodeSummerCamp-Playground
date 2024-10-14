@@ -9,17 +9,18 @@ $(function() {
     const helpButton = document.getElementById("helpButton")
     const inputResultButton = document.getElementById("inputResultButton")
 
+    let editorCodeBlock 
     // Check if Monaco is already loaded, else load it then initialize editor
     if (typeof monaco === 'undefined') {
         require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
-        require(['vs/editor/editor.main'], initMonacoEditor());
+        require(['vs/editor/editor.main'], editorCodeBlock = initMonacoEditor());
     } 
-    else { initMonacoEditor() }
+    else { editorCodeBlock = initMonacoEditor() }
 
     
     assignmentSelect.addEventListener("change", () => { loadAssignment() })
     
-    runCodeButton.addEventListener("click", ()=>{ getDataFromUser() })
+    runCodeButton.addEventListener("click", ()=>{ sendUserCode() })
     
     function loadAssignment() {
         selection = assignmentSelect.value
@@ -65,7 +66,7 @@ $(function() {
             "while (true)",
         ].join('\n')
 
-        let editorCodeBlock = monaco.editor.create(document.getElementById('codeEditor'), {
+        let editor = monaco.editor.create(document.getElementById('codeEditor'), {
             value: codeContent,
             language: "python",
             theme: "vs-dark",
@@ -87,5 +88,6 @@ $(function() {
         // window.addEventListener('resize', function() {
         //     editorCodeBlock.layout();
         // });
+        return editor
     }
 })
