@@ -29,4 +29,6 @@ docker container ps -a
 
 #Kör användarens python-kod som ligger i pythontest.py. 
 docker exec -d python_$id sh -c "python runinput.py"
-
+#docker exec -d python_$id sh -c "python printerror.py"
+#docker exec -d python_$id sh -c "python createjson.py"
+python /usr/src/app/pythonsetup/createjson.py
