@@ -9,6 +9,7 @@
 }
 
 body {
+    box-sizing: border-box;
     /*margin makes the items actually stretch to the whole page. leaves white empty space otherwise.*/
     margin: 0px;
     background-color: #6F00FF;
@@ -39,27 +40,35 @@ a:active {
 
 .nav-bar{
     background-color: #000B3D;
+    box-sizing: border-box;
     width: 100%;
     padding-left: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: #7CF7F9;
-    /* box-shadow: 2px 2px 8px #000000; */
+    box-shadow: 2px 2px 8px #000000;
+}
+nav{
+    width: 20%;
 }
 
-.nav-links
+.nav-content
 {
     display: flex;
-    width: 100%;
 	justify-content: space-between; 
 	list-style: none;
 	text-decoration: none;
+}
+.nav-links{
+    padding: 0%;
+    justify-content: space-evenly;
 }
 
 a#nav-title {
     color: #7CF7F9;
     text-decoration: unset;
+    width: 80%;
 }
 
 .page-container {
@@ -83,6 +92,7 @@ pre{
     margin-top: 15px;
     /* margin-left: 10%; */
     margin-right: 10%;
+    height: fit-content;
 }
 textarea{
     resize: none;
@@ -124,6 +134,7 @@ textarea{
     /*Think this puts it at the bottom of the browser window, rather than the webpage itself.
     That might be bad in the future if we add a scrollbar, but works for now.*/
     position: fixed; bottom: 0;
+    max-height: 40px;
 }
 
 .logo{
@@ -159,6 +170,17 @@ img{
             background: #7cf7f9 !important;
             color: #150b3f !important;
         }
+    }
+
+    &.start-page-main-btn{
+        margin: 40%;
+        height:max-content;
+        width: max-content;
+        padding: .8rem 1.7rem .9rem 1.7rem;
+        font-size: large;
+    }
+    &.playground-btn{
+        margin-bottom: 50px;
     }
 }    
 /* 

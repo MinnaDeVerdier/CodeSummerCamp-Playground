@@ -1,15 +1,21 @@
 $(function() {
-    let assignmentSelect = document.getElementById("assignmentSelect")
+    const assignmentSelect = document.getElementById("assignmentSelect")
     const title = document.getElementById("assignmentTitle")
-    let codeBehind = document.getElementById("codeBehind")
-    let codeBehindDiv = document.getElementById("codeBehindDiv")
+    const codeDescription = document.getElementById("codeDescription")
    // const codeEditor = document.getElementById("codeEditor")
-    let feedbackDisplay = document.getElementById("feedbackDisplay")
+    const feedbackDisplay = document.getElementById("feedbackDisplay")
     const runCodeButton = document.getElementById("runCodeButton")
     const helpButton = document.getElementById("helpButton")
     const inputResultButton = document.getElementById("inputResultButton")
-
-    let editorCodeBlock 
+    
+    var language = 0
+    switch (runCodeButton.getAttribute('page-lang')){
+        case 'python': language = 1
+        case 'csharp': language = 2
+        default: language = 1
+    }
+    
+    let editorCodeBlock;
     // Check if Monaco is already loaded, else load it then initialize editor
     if (typeof monaco === 'undefined') {
         require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
@@ -25,31 +31,29 @@ $(function() {
     function loadAssignment() {
         selection = assignmentSelect.value
         fetch(`/assignmentData/${selection}`)
-        // Here lies trouble. Recieves JSON-like response but cant use it in website. Will leave it for daytime. 
-        .then( (response) => {
-           let resjson = JSON.stringify(response, null, 2)
-      //      let resjson = response.toString()
-           title.innerText = resjson["title"]
-
-            codeBehindDiv.textContent = resjson
-            feedbackDisplay.textContent = resjson.title
+        // Parse response as JSON then use response data
+        .then( response => response.json())
+        .then( (data) => {
+            if (!data.exists) title.innerText = "Assignment doesn't exist"
+            else title.innerText = data.title;
+            // Turn newlines into html-linebreaks for formatting
+            codeDescription.innerHTML = data.description.replace(/\n/g, '<br>')       
         })
         .catch( (error) => { console.log(error)})
-            
-        }
+    }
 
     function sendUserCode() {
         let aText = editorCodeBlock.getValue()
-        fetch("./", {
+        // Post code to chosen language and assignment
+        fetch(`/run/${language}/${assignmentSelect.value}`, {
             method: "post",
             headers: {
                 "Content-Type": "text/plain"
             },
-            body: aText //modify to contain more metadata?
+            body: aText
         })
         .then(response => {
                 console.log("response: ",response.text())
-                display.innerText += "\n\nSENT"
         })
         .catch( (error) => { console.log(error)})
     }

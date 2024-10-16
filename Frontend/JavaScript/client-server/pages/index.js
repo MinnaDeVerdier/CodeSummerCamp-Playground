@@ -3,7 +3,9 @@ $(function() {
     let navLinks = document.querySelectorAll('.nav-links a')
     let pageContainer = document.getElementById('page-container')
     let windowTitle = document.getElementById('window-title')
-    const playgroundButton = document.getElementById('playground-button')
+    const pythonButton = document.getElementById('python-button')
+    const csharpButton = document.getElementById('csharp-button')
+
 
     // Make every assignment-link load the corresponding HTML-body
     navLinks.forEach(link => {
@@ -12,28 +14,31 @@ $(function() {
                 windowTitle.innerText = link.firstChild.innerText; 
                 return;
             }
-            e.preventDefault();
-            goToPlayground(link, windowTitle, pageContainer);
+            // e.preventDefault();
+            // goToPage(link, windowTitle, pageContainer);
             
         })
     })
-    playgroundButton.addEventListener('click', (e) => goToPlayground(playgroundButton, windowTitle, pageContainer))
-    
-    function goToPlayground(link, windowTitle, pageContainer) {
+    pythonButton.addEventListener('click', (e) => goToPage(pythonButton, windowTitle, pageContainer))
+    csharpButton.addEventListener('click', (e) => goToPage(csharpButton, windowTitle, pageContainer))
+
+    function goToPage(link, windowTitle, pageContainer) {
+        windowTitle.innerText = link.innerHTML;
+        let page = link.getAttribute('page-type');
+        let lang = link.getAttribute('lang-name')
+        // Add script-file to container-content
         let script = document.createElement('script');
-        if (link.getAttribute('page-name') == "playground") {
+        if (page == "playground") {
             script.src = 'playground.js';
-    }
-    windowTitle.innerText = link.innerHTML;
-    let page = link.getAttribute('page-name');
-    // Fetch the page content from server as a html-file and paste into container
-    fetch(`/${page}`)
-        .then(response => response.text())
-        .then(content => {
-            pageContainer.innerHTML = content;
-            if (script.src) document.body.appendChild(script);
-        })
-        .catch(err => { console.log('Failed fetching page: ', err); });
+        }
+        // Fetch the page content from server as a html-file and paste into container
+        fetch(`/${page}/${lang}`)
+            .then(response => response.text())
+            .then(content => {
+                pageContainer.innerHTML = content;
+                if (script.src) document.body.appendChild(script);
+            })
+            .catch(err => { console.log('Failed fetching page: ', err); });
     }
     
 });

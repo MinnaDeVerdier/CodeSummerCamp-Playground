@@ -1,17 +1,43 @@
 {
     "sent": { 
         "id": "g4g4g", 
-        "language": "Python.3.12",
+        "language": 1,
         "installs": ["numpy", "pandas", "jquery"], 
-        "code": "hela kod-dokumentet",
-        "data": "exempel-data testdata-länk osv"
-    },
-    "returned": {
-        "id": "g4g4g",
-        "language": "Python.3.12",
-        "installs": ["numpy", "pandas", "jquery"],
-        "result": "result output text",
-        "testresultPassed": true,
-        "testresultData": "errormessage/result"
+        "code": ["import sys",
+            "def Solution(n):",
+            "if n >= 104:",
+            "    return",
+            "for num in range(1,n):",
+            "string = \"\"",
+            "if num % 3 == 0:",
+            "    string = string + \"Fizz\"",
+            "if num % 4 == 0:",
+            "    string = string + \"Buzz\"",
+            "if num % 4 != 0 and num % 3 != 0:",
+            "    string = string + str(num)",
+            "print(string)",
+            ""],
+        "testCode": {
+            "test1": ["ans = Solution(4)",
+            "if ans.lower() == ['1', '2', 'Fizz', '4']:",
+            "    test1={\"passed\": true, \"result\": ans}",
+            "else:",
+            "    test1={\"passed\": false, \"result\": ans}"],
+            "test2": ["ans = Solution(9)",
+            "if ans.lower() == ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz']:",
+            "    test1={\"passed\": true, \"result\": ans}",
+            "else:",
+            "    test1={\"passed\": false, \"result\": ans}"],
+            "test3": ["ans = Solution(15)",
+            "if ans.lower() == ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']:",
+            "    test1={\"passed\": true, \"result\": ans}",
+            "else:",
+            "    test1={\"passed\": false, \"result\": ans}"],
+            "test4": ["ans = Solution(151)",
+            "if ans.lower() == []:",
+            "    test1={\"passed\": true, \"result\": ans}",
+            "else:",
+            "    test1={\"passed\": false, \"result\": ans}"]
+        }
     }
 }

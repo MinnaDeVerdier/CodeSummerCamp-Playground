@@ -7,6 +7,7 @@ import { spawn } from 'node:child_process';
 //import session, { MemoryStore } from 'express-session';
 import session from 'cookie-session';
 import {randomUUID} from 'crypto';
+import oFileStream from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
@@ -76,34 +77,80 @@ app.use((req, res, next) => {
 //     runPython()
 // })
 
-app.get('/playground', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pages', 'playground.html'));
+app.get('/playground/:lang', (req, res) => {
+    let lang = req.params.lang
+    res.sendFile(path.join(__dirname, 'pages', `playground_${lang}.html`));
 });
 
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'login.html'));
 });
 
+/* Returns assignment data to load into website */
 app.get('/assignmentData/:assignmentID', (req, res) => {
     console.log("assID: ", req.params.assignmentID)
-    oFileStream.readFile(path.join(__dirname, 'files', 'assignmentData.json'), 'utf8', (err, data) => {
-        if(err) 
-            console.log(err)
-        
-        let jstring=JSON.parse(data)
-        let assignmentjson = {"status": "Assignment doesnt exist"}
-        
-        for (var item in jstring) {            
-            if (item == req.params.assignmentID)
-                assignmentjson = jstring[item]
-            console.log("---TITLE---", jstring[item]["title"])
-        }
-        console.log(assignmentjson)
-        res.send(assignmentjson)
-    })
-  //  res.sendFile(path.join(__dirname, 'files', 'assignmentData.json'));
-});
+    let assignment = getAssignment(req.params.assignmentID)
+    // Send response as JSON string
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(assignment));
+})
 
+function getAssignment(assignmentID) {
+    let assignmentjson = {"exists": false}
+    let data = oFileStream.readFileSync(path.join(__dirname, 'files', 'assignmentData.json'), 'utf-8')
+    let jstring=JSON.parse(data)
+
+    console.log("Parsing JSTRING")
+    // Finds the assignment based on ID
+    for (var item in jstring) {            
+        console.log("---TITLE---", jstring[item]["title"])
+        if (item == assignmentID) {
+            assignmentjson = jstring[item]
+            assignmentjson["exists"] = true       
+            console.log("item: ", item)       
+        }  
+    }
+    console.log("PARSED")
+    return assignmentjson
+}
+
+/* Adds user code to assignment data and sends to shared files for testing in container */
+app.post("/run/:lang/:assignmentID", (req, res) => {
+    let lang = req.params.lang
+    let assignment = getAssignment(req.params.assignmentID)
+    addUserCodeToAssignment(assignment, lang, req)
+    res.send(`handled request: (${res.statusCode})`)
+})
+
+function addUserCodeToAssignment(assignment, lang, req) {
+    let body = req.body.split('\n')
+    // Add student code line by line into support code
+    let codeComboWombo = []
+    let inst = ['numpty', "dumpty"]
+    assignment.supportCode.forEach(line => {        
+        if(line == "---CODE---") {
+            body.forEach(element => codeComboWombo.push(element))
+        }
+        else 
+            codeComboWombo.push(line)
+    }); 
+    // Writes file and saves to container
+    let dataToContainer = {
+        "sent": { 
+            "id": req.session.id, 
+            "language": lang,
+            "installs": inst, 
+            "code": codeComboWombo,
+            "testCode": assignment.testCode
+    }}
+    console.log("test: ", dataToContainer.sent.testCode)
+    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainer, null, 4), (err) => {
+        if(err) console.log(err)
+        else console.log("-.-.-Data written to file.... ", dataToContainer)
+    })
+}
+
+/* Old run-code function */
 app.post("/", (req, res) => {
     console.log('Session data:', req.session);
     console.log('req.sessionID: ', req.session.id)
@@ -115,8 +162,7 @@ app.post("/", (req, res) => {
 //    runPython()
 })
 
-import oFileStream from 'fs';
-let writeToFile = (req) => {
+function writeToFile(req) {
     let lang = 1 //1 = python3.12 
     let dataToContainerStarter = {
         "sent": { 
