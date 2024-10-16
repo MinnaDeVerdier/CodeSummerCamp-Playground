@@ -10,6 +10,17 @@ clean() {
     echo "$(date +%T)...DONE"
 }
 
+clear_logs(){
+    for logfile in /usr/src/app/logs/*.log ; do
+        temp="$head -n2"
+        $temp > $logfile
+        echo $logfile
+    done
+    echo "$(date +%T)...CLEARING LOGS DONE..."
+        #echo "### logs for docker startup from entrypoint ###" > /usr/src/app/logs/createDockerLog.log
+        #echo " " >> /usr/src/app/logs/createDockerLog.log
+}
+
 # Stop and remove all containers, images, anon+inactive volumes and networks.
 clean_all() {
     echo "...CLEANING ALL"
@@ -24,7 +35,7 @@ clean_all() {
     echo "$(date +%T)...DONE"
 
 }
-
+clear_logs
 echo "$(date +%T)...STARTING CLEANER..."
 clean
 
@@ -44,14 +55,16 @@ COUNTDOWN="0115"
 
 # Sleeps until cleaning_time, then sleeps 24 hours between cleanings
 while true ; do
-    minutes=${COUNTDOWN:2:2}  # Extract last two digits
-    hours=${COUNTDOWN:0:2}    # Extract first two digits
+    minutes=${COUNTDOWN:2:2}  # Extract last two digits for min
+    hours=${COUNTDOWN:0:2}    # Extract first two digits for h
     echo "SLEEPING FOR h$hours m$minutes..."
 
     # Convert hours to seconds and add minutes converted to seconds
     total_seconds=$((hours * 3600 + minutes * 60))
     sleep $total_seconds
-    #sec=`expr \(expr $(date -d $COUNTDOWN +%M) \* 60\) + \(expr $(date -d $COUNTDOWN +%H) \* 60 \* 60\)`
+    
+    clear_logs
     clean_all
+    # Countdown 24 hours to next clean
     COUNTDOWN="2400"
 done
