@@ -31,6 +31,7 @@ services:
         path: package.json
     volumes:
       - web-python-vol:/usr/src/app/codefiles
+      - user-output:/usr/src/app/outputfiles
   dind:
     build: 
       context: ./Frontend/Dind

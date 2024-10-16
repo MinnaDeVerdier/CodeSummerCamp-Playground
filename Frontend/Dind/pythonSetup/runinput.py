@@ -21,6 +21,7 @@ def runTest(test, code):
     with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "a") as outputfile:
         outputfile.write(f"{test}:\n    {result}")
     print("--Result--:", res)
+    return result
 
 def buildPythonTests():
     codeToRun={}
@@ -38,6 +39,28 @@ print("args: ", sys.argv)
 instructionFile = sys.argv[1]
 sessionID = sys.argv[2]
 
+
+
+def writeJson():
+    outputjson = {
+        "returned": {
+            "id": sessionID,
+            "output": "sys.stdout",
+            "error": "sys.stderr",
+            "testresult": tempDict
+        }
+    }
+
+    with open(f"/usr/src/app/outputfiles/{sessionID}.json", "w") as jsonFile:
+        #https://www.geeksforgeeks.org/reading-and-writing-json-to-a-file-in-python/ json.dump taget från andra exemplet
+        #outputjson["output"] = "rtytrytry"
+        #outputjson["error"] = "yuiyuiyui"
+        #outputjson["returned"]
+        json.dump(outputjson, jsonFile, indent=2)
+        
+
+
+
 with open(instructionFile) as Jfile:
     instruction = json.load(Jfile)
 
@@ -45,6 +68,10 @@ with open(instructionFile) as Jfile:
 with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "w") as outputfile:
     outputfile.flush()
 
+tempDict = {}
+
 codeToRun = buildPythonTests()
 for item in codeToRun:
-    runTest(item, codeToRun[item])
+    tempDict[item] = runTest(item, codeToRun[item])
+writeJson()
+
