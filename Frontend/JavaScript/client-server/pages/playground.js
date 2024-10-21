@@ -36,11 +36,14 @@ $(function() {
         // Parse response as JSON then use response data
         .then( response => response.json())
         .then( (data) => {
+            codeDescription.innerText = "select assignment"
             if (!data.exists) title.innerText = "Assignment doesn't exist"
-            else title.innerText = data.title
-            editorCodeBlock = initMonacoEditor(data.existingCode)
-            // Turn newlines into html-linebreaks for formatting
-            codeDescription.innerHTML = data.description.replace(/\n/g, '<br>')       
+            else {
+                title.innerText = data.title
+                editorCodeBlock = initMonacoEditor(data.existingCode)
+                // Turn newlines into html-linebreaks for formatting
+                codeDescription.innerHTML = data.description.replace(/\n/g, '<br>')
+            }
         })
         .catch( (error) => { console.log(error)})
     }
@@ -68,7 +71,7 @@ $(function() {
     function initMonacoEditor(codestart) {
         let codeContent = codestart.join('\n')
         // Remove loaded editor if exists
-        if (codeEditor.hasChildNodes())
+        while (codeEditor.childElementCount > 0)
             codeEditor.firstChild.remove()
         // Create new editor with codestart-value
         let editor = monaco.editor.create(document.getElementById('codeEditor'), {
