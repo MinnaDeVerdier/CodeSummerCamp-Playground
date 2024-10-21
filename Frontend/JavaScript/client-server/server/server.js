@@ -4,10 +4,9 @@ import { dirname } from 'path';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { spawn } from 'node:child_process';
-//import session, { MemoryStore } from 'express-session';
 import session from 'cookie-session';
 import {randomUUID} from 'crypto';
-import oFileStream from 'fs';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
@@ -21,7 +20,7 @@ app.use(oExpress.static(path.join(__dirname, 'pages')));
 app.use('/codefiles', oExpress.static(path.join(__dirname, 'codefiles')));
 app.use('/images', oExpress.static(path.join(__dirname, 'images')));
 app.use('/node_modules', oExpress.static(path.join(__dirname, 'node_modules')));
-//app.use('/server', oExpress.static(path.join(__dirname, 'server')));
+app.use('/outputfiles', oExpress.static(path.join(__dirname, 'outputfiles')));
 app.use(bodyParser.text({ type: 'text/plain'}))
 app.use(bodyParser.json({ type: 'application/json'}))
 
@@ -88,97 +87,133 @@ app.get('/login', (req, res) => {
 
 /* Returns assignment data to load into website */
 app.get('/assignmentData/:assignmentID', (req, res) => {
-    console.log("assID: ", req.params.assignmentID)
     let assignment = getAssignment(req.params.assignmentID)
-    // Send response as JSON string
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(assignment));
+    res.setHeader('Content-Type', 'application/json')
+    res.send(JSON.stringify(assignment))
+})
+
+/* Adds user code to assignment data and sends to shared files for testing in container */
+app.post("/run/:lang/:assignmentID", (req, res) => {
+    // Start watcher to listen for changes in file named after sessionID
+    let watcher = createWatcher(req, res)
+    watcher.addListener('close', () => {
+        console.log("...closed watcher..")
+    })
+    let lang = req.params.lang
+    let assignment = getAssignment(req.params.assignmentID)
+    // Combine assignmentData with user code, if not stop watcher and send errorcode
+    if (! addUserCodeToAssignment(assignment, lang, req, res)) {
+        watcher.close()
+        res.send()
+    }
 })
 
 function getAssignment(assignmentID) {
     let assignmentjson = {"exists": false}
-    let data = oFileStream.readFileSync(path.join(__dirname, 'files', 'assignmentData.json'), 'utf-8')
-    let jstring=JSON.parse(data)
+    let data = fs.readFileSync(path.join(__dirname, 'files', 'assignmentData.json'), 'utf8')
+    let jdata=JSON.parse(data)
 
     console.log("Parsing JSTRING")
     // Finds the assignment based on ID
-    for (var item in jstring) {            
-        console.log("---TITLE---", jstring[item]["title"])
-        if (item == assignmentID) {
-            assignmentjson = jstring[item]
-            assignmentjson["exists"] = true       
-            console.log("item: ", item)       
-        }  
-    }
+    if (assignmentID in jdata) {
+        assignmentjson = jdata[assignmentID]
+        assignmentjson["exists"] = true       
+    }  
     console.log("PARSED")
     return assignmentjson
 }
 
-/* Adds user code to assignment data and sends to shared files for testing in container */
-app.post("/run/:lang/:assignmentID", (req, res) => {
-    let lang = req.params.lang
-    let assignment = getAssignment(req.params.assignmentID)
-    addUserCodeToAssignment(assignment, lang, req)
-    res.send(`handled request: (${res.statusCode})`)
-})
-
-function addUserCodeToAssignment(assignment, lang, req) {
-    let body = req.body.split('\n')
-    // Add student code line by line into support code
-    let codeComboWombo = []
-    let inst = ['numpty', "dumpty"]
-    assignment.supportCode.forEach(line => {        
-        if(line == "---CODE---") {
-            body.forEach(element => codeComboWombo.push(element))
-        }
-        else 
-            codeComboWombo.push(line)
-    }); 
-    // Writes file and saves to container
-    let dataToContainer = {
-        "sent": { 
-            "id": req.session.id, 
-            "language": lang,
-            "installs": inst, 
-            "code": codeComboWombo,
-            "testCode": assignment.testCode
-    }}
-    console.log("test: ", dataToContainer.sent.testCode)
-    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainer, null, 4), (err) => {
-        if(err) console.log(err)
-        else console.log("-.-.-Data written to file.... ", dataToContainer)
+// FROM https://nodejs.org/docs/latest/api/fs.html#fswatchfilename-options-listener
+function createWatcher(req, res) {
+    let filepath = path.join(__dirname, 'outputfiles', `${req.session.id}.json`)
+    fs.appendFileSync(filepath, '', (err) => { 
+        if (err) console.log(err)
     })
+    let watcher = fs.watch(filepath, (eventType, filename) => {
+        console.log(`Event type: ${eventType} Filename: ${filename}`)
+            if (eventType == 'change') {                
+                let testResult = JSON.parse(fs.readFileSync(filepath))["returned"]
+                res.setHeader('Content-Type', 'application/json')
+                res.send(JSON.stringify(testResult))
+                console.log("---testresult from dind---", JSON.stringify(testResult))
+                watcher.close()
+            }
+        });
+    return watcher
+};
+
+function addUserCodeToAssignment(assignment, lang, req, res) {
+    let body = req.body.split('\n')
+    let codeComboWombo = []
+    // installs NYI
+    let inst = ['numpty', "dumpty"]
+    // Add student code line by line into support code
+    try {
+        assignment.supportCode.forEach(line => {        
+            if(line == "---CODE---")
+                body.forEach(element => codeComboWombo.push(element))
+            else 
+                codeComboWombo.push(line)
+        }); 
+        // Writes file and saves to container
+        let dataToContainer = {
+            "sent": { 
+                "id": req.session.id, 
+                "language": lang,
+                "installs": inst, 
+                "code": codeComboWombo,
+                "testCode": assignment.testCode
+        }}
+        fs.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainer, null, 4), (err) => {
+            if(err) console.log(err)
+            else console.log("---Data written to file---", dataToContainer)
+        })
+    }   
+    catch (error) {
+        console.log(error.name, error.message)
+        if (error.name == "TypeError") {
+            console.log(`! Assignment ${req.params.assignmentID} is probably not properly formatted`)
+            res.status(501)
+            res.statusMessage = `Could not parse Assignment:${req.params.assignmentID}`
+        }
+        else {
+            res.status(501)
+            res.statusMessage = `Unknown error when parsing AssignmentData:${req.params.assignmentID}`
+        }
+        return false
+    }
+    return true
 }
 
 /* Old run-code function */
-app.post("/", (req, res) => {
-    console.log('Session data:', req.session);
-    console.log('req.sessionID: ', req.session.id)
-    console.log('req.params: ', req.params)
+// app.post("/", (req, res) => {
+//     console.log('Session data:', req.session);
+//     console.log('req.sessionID: ', req.session.id)
+//     console.log('req.params: ', req.params)
 
-    writeToFile(req)
-    res.send(`handled request: (${res.statusCode})`)
-    console.log(req.body)
-//    runPython()
-})
+//     writeToFile(req)
+//     res.send(`handled request: (${res.statusCode})`)
+//     console.log(req.body)
+// //    runPython()
+// })
 
-function writeToFile(req) {
-    let lang = 1 //1 = python3.12 
-    let dataToContainerStarter = {
-        "sent": { 
-            "id": req.session.id, 
-            "language": lang,
-            "installs": ["numpy", "pandas", "jquery"], 
-            "code": req.body,
-            "data": "exempel-data testdata-länk osv"
-    }}
+// function writeToFile(req) {
+//     let lang = 1 //1 = python3.12 
+//     let dataToContainerStarter = {
+//         "sent": { 
+//             "id": req.session.id, 
+//             "language": lang,
+//             "installs": ["numpy", "pandas", "jquery"], 
+//             "code": req.body,
+//             "data": "exempel-data testdata-länk osv"
+//     }}
     
-    oFileStream.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainerStarter, null, 4), (err) =>
-    {
-        if(err) console.log(err)
-        else console.log("Data written to file.... ", dataToContainerStarter)
-    })
-}
+//     fs.writeFile(`codefiles/${req.session.id}.json`, JSON.stringify(dataToContainerStarter, null, 4), (err) =>
+//     {
+//         if(err) console.log(err)
+//         else console.log("Data written to file.... ", dataToContainerStarter)
+//     })
+// }
 
 app.get("./", (bRequire, bResponse) => {
     console.log(bRequire)
@@ -238,3 +273,4 @@ function createContainer(){
     });
 }
 */
+

@@ -125,6 +125,13 @@ textarea{
     margin: 20px 0px;
     padding: 15px; 
     /* visibility: hidden; */
+    &.test {
+        background: #f5695d;
+        height: 15%;
+        padding: 5px;
+        margin-top: 20px;
+        visibility: hidden;
+    }
 }
 
 .footer{

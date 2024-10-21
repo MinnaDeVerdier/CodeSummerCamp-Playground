@@ -6,22 +6,24 @@ $(function() {
     const feedbackDisplay = document.getElementById("feedbackDisplay")
     const runCodeButton = document.getElementById("runCodeButton")
     const helpButton = document.getElementById("helpButton")
-    const inputResultButton = document.getElementById("inputResultButton")
+    const testFeedback = document.getElementById("testFeedback")
+    const codeEditor = document.getElementById('codeEditor')
     
-    var language = 0
-    switch (runCodeButton.getAttribute('page-lang')){
-        case 'python': language = 1
-        case 'csharp': language = 2
-        default: language = 1
+    langList= {
+        'python': 1,
+        'csharp': 2
     }
+    let codingLanguage = runCodeButton.getAttribute('page-lang')
+    let languageID = langList[codingLanguage]
     
     let editorCodeBlock;
+    let codeContent = ["text = 'Hello World'", "print(text)"]
     // Check if Monaco is already loaded, else load it then initialize editor
     if (typeof monaco === 'undefined') {
         require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
-        require(['vs/editor/editor.main'], editorCodeBlock = initMonacoEditor());
+        require(['vs/editor/editor.main'], editorCodeBlock = initMonacoEditor(codeContent));
     } 
-    else { editorCodeBlock = initMonacoEditor() }
+    else { editorCodeBlock = initMonacoEditor(codeContent) }
 
     
     assignmentSelect.addEventListener("change", () => { loadAssignment() })
@@ -35,7 +37,8 @@ $(function() {
         .then( response => response.json())
         .then( (data) => {
             if (!data.exists) title.innerText = "Assignment doesn't exist"
-            else title.innerText = data.title;
+            else title.innerText = data.title
+            editorCodeBlock = initMonacoEditor(data.existingCode)
             // Turn newlines into html-linebreaks for formatting
             codeDescription.innerHTML = data.description.replace(/\n/g, '<br>')       
         })
@@ -45,34 +48,32 @@ $(function() {
     function sendUserCode() {
         let aText = editorCodeBlock.getValue()
         // Post code to chosen language and assignment
-        fetch(`/run/${language}/${assignmentSelect.value}`, {
+        fetch(`/run/${languageID}/${assignmentSelect.value}`, {
             method: "post",
-            headers: {
-                "Content-Type": "text/plain"
-            },
+            headers: { "Content-Type": "text/plain" },
             body: aText
         })
-        .then(response => {
-                console.log("response: ",response.text())
+        .then( response => response.json())
+        .then( (data) => {
+            feedbackDisplay.innerText = data.output
+            for (test in data.testresult) {
+                feedbackDisplay.innerText += `${test}:\n${data.testresult[test]}\n`
+            }
+            testFeedback.style.visibility = "visible"
+//            feedbackDisplay.innerHTML = data.replace(/\n/g, '<br>')           
         })
         .catch( (error) => { console.log(error)})
     }
 
-    function initMonacoEditor() {
-        // Create editor
-        let codeContent = ["text = ''",
-            "if 1==1:",
-            "    text = 'Hello World'",
-            "else:",
-            "    text = 'Bye World'",
-            "print(text)",
-            "",
-            "while (true)",
-        ].join('\n')
-
+    function initMonacoEditor(codestart) {
+        let codeContent = codestart.join('\n')
+        // Remove loaded editor if exists
+        if (codeEditor.hasChildNodes())
+            codeEditor.firstChild.remove()
+        // Create new editor with codestart-value
         let editor = monaco.editor.create(document.getElementById('codeEditor'), {
             value: codeContent,
-            language: "python",
+            language: codingLanguage,
             theme: "vs-dark",
             lineNumbers: 'on',
             glyphMargin: false,
@@ -88,7 +89,7 @@ $(function() {
             },
             lineHeight: 22,
         });
-        //     // Ensure proper layout
+        //     // Ensure proper layout?
         // window.addEventListener('resize', function() {
         //     editorCodeBlock.layout();
         // });
