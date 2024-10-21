@@ -2,6 +2,22 @@ import json
 import sys
 import subprocess
 
+print("----runinput.py----")
+print("args: ", sys.argv)
+instructionFile = sys.argv[1]
+sessionID = sys.argv[2]
+
+def buildPythonTests():
+    codeToRun={}
+    # Writes the recieved code as string
+    codestring = "\n".join(instruction["sent"]["code"])
+    # Create dict for each test, with code and test combined in runnable string. Could be redundant if subprocess input can stay open and accept diferent tests
+    for test in instruction["sent"]["testCode"]:
+        teststring = '\n'.join(instruction["sent"]["testCode"][test])
+        fullstring = codestring + "\n" + teststring
+        codeToRun[test]=fullstring
+    return codeToRun
+
 def runTest(test, code):
     try:
         # Should the subprocess-line be 
@@ -23,24 +39,6 @@ def runTest(test, code):
     print("--Result--:", res)
     return result
 
-def buildPythonTests():
-    codeToRun={}
-    # Writes the recieved code as string
-    codestring = "\n".join(instruction["sent"]["code"])
-    # Create dict for each test, with code and test combined in runnable string. Could be redundant if subprocess input can stay open and accept diferent tests
-    for test in instruction["sent"]["testCode"]:
-        teststring = '\n'.join(instruction["sent"]["testCode"][test])
-        fullstring = codestring + "\n" + teststring
-        codeToRun[test]=fullstring
-    return codeToRun
-
-print("----runinput.py----")
-print("args: ", sys.argv)
-instructionFile = sys.argv[1]
-sessionID = sys.argv[2]
-
-
-
 def writeJson():
     outputjson = {
         "returned": {
@@ -58,19 +56,19 @@ def writeJson():
         #outputjson["returned"]
         json.dump(outputjson, jsonFile, indent=2)
         
-
-
-
+# Load instructions
 with open(instructionFile) as Jfile:
     instruction = json.load(Jfile)
 
-# Empties earlier tries
+# Empty previous attempts from session
 with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "w") as outputfile:
     outputfile.flush()
 
-tempDict = {}
-
+# Create runnable strings
 codeToRun = buildPythonTests()
+
+# Run tests and save to JSON
+tempDict = {}
 for item in codeToRun:
     tempDict[item] = runTest(item, codeToRun[item])
 writeJson()

@@ -10,17 +10,6 @@ clean() {
     echo "$(date +%T)...DONE"
 }
 
-clear_logs(){
-    for logfile in /usr/src/app/logs/*.log ; do
-        temp="$head -n2"
-        $temp > $logfile
-        echo $logfile
-    done
-    echo "$(date +%T)...CLEARING LOGS DONE..."
-        #echo "### logs for docker startup from entrypoint ###" > /usr/src/app/logs/createDockerLog.log
-        #echo " " >> /usr/src/app/logs/createDockerLog.log
-}
-
 # Stop and remove all containers, images, anon+inactive volumes and networks.
 clean_all() {
     echo "...CLEANING ALL"
@@ -35,7 +24,7 @@ clean_all() {
     echo "$(date +%T)...DONE"
 
 }
-clear_logs
+
 echo "$(date +%T)...STARTING CLEANER..."
 clean
 
@@ -47,9 +36,9 @@ CLEANING_TIME="2330"
 #echo "...CLEANING_TIME $CLEANING_TIME..."
 
 if [ $STARTING_TIME -ge $CLEANING_TIME ] ; then
-    COUNTDOWN=`expr $STARTING_TIME - $CLEANING_TIME`
+    COUNTDOWN=$(($STARTING_TIME - $CLEANING_TIME))
 else
-    COUNTDOWN=`expr $CLEANING_TIME - $STARTING_TIME`
+    COUNTDOWN=$(expr $CLEANING_TIME - $STARTING_TIME)
 fi
 COUNTDOWN="0115"
 
@@ -63,7 +52,7 @@ while true ; do
     total_seconds=$((hours * 3600 + minutes * 60))
     sleep $total_seconds
     
-    clear_logs
+    #sh empty_logs.sh
     clean_all
     # Countdown 24 hours to next clean
     COUNTDOWN="2400"
