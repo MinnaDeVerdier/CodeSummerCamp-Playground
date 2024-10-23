@@ -2,13 +2,12 @@ $(function() {
     const assignmentSelect = document.getElementById("assignmentSelect")
     const title = document.getElementById("assignmentTitle")
     const codeDescription = document.getElementById("codeDescription")
-   // const codeEditor = document.getElementById("codeEditor")
+    const codeEditor = document.getElementById("codeEditor")
     const feedbackDisplay = document.getElementById("feedbackDisplay")
     const runCodeButton = document.getElementById("runCodeButton")
-    const helpButton = document.getElementById("helpButton")
     const testFeedback = document.getElementById("testFeedback")
-    const codeEditor = document.getElementById('codeEditor')
     
+    // Make sure languages as set in html attribute 'page-lang' are the same as available in monaco-editor
     langList= {
         'python': 1,
         'csharp': 2
@@ -17,13 +16,12 @@ $(function() {
     let languageID = langList[codingLanguage]
     
     let editorCodeBlock;
-    let codeContent = ["text = 'Hello World'", "print(text)"]
     // Check if Monaco is already loaded, else load it then initialize editor
     if (typeof monaco === 'undefined') {
         require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
-        require(['vs/editor/editor.main'], editorCodeBlock = initMonacoEditor(codeContent));
+        require(['vs/editor/editor.main'], editorCodeBlock = initMonacoEditor());
     } 
-    else { editorCodeBlock = initMonacoEditor(codeContent) }
+    else { editorCodeBlock = initMonacoEditor() }
 
     
     assignmentSelect.addEventListener("change", () => { loadAssignment() })
@@ -40,7 +38,7 @@ $(function() {
             if (!data.exists) title.innerText = "Assignment doesn't exist"
             else {
                 title.innerText = data.title
-                editorCodeBlock = initMonacoEditor(data.existingCode)
+                editorCodeBlock.getModel().setValue(data.existingCode.join('\n'))
                 // Turn newlines into html-linebreaks for formatting
                 codeDescription.innerHTML = data.description.replace(/\n/g, '<br>')
             }
@@ -58,24 +56,20 @@ $(function() {
         })
         .then( response => response.json())
         .then( (data) => {
-            feedbackDisplay.innerText = data.output
             for (test in data.testresult) {
                 feedbackDisplay.innerText += `${test}:\n${data.testresult[test]}\n`
             }
-            testFeedback.style.visibility = "visible"
-//            feedbackDisplay.innerHTML = data.replace(/\n/g, '<br>')           
+            // testFeedback.innerText = data.output
+            // testFeedback.style.visibility = "visible"
+//            testFeedback.innerHTML = data.replace(/\n/g, '<br>')           
         })
         .catch( (error) => { console.log(error)})
     }
 
-    function initMonacoEditor(codestart) {
-        let codeContent = codestart.join('\n')
-        // Remove loaded editor if exists
-        while (codeEditor.childElementCount > 0)
-            codeEditor.firstChild.remove()
+    function initMonacoEditor() {
         // Create new editor with codestart-value
-        let editor = monaco.editor.create(document.getElementById('codeEditor'), {
-            value: codeContent,
+        let editor = monaco.editor.create(codeEditor, {
+            value: "",
             language: codingLanguage,
             theme: "vs-dark",
             lineNumbers: 'on',

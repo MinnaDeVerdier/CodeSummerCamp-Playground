@@ -109,6 +109,14 @@ textarea{
     width: 90%;
     height: 800px;
 }
+#button-container-index{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 50%;
+    margin: auto;
+    margin-top: 25%;
+}
 .exercise_input{
     box-sizing: inherit;
     margin: 16px 10px 16px 0px;
@@ -180,9 +188,10 @@ img{
     }
 
     &.start-page-main-btn{
-        margin: 40%;
+        margin: 10%;
         height:max-content;
-        width: max-content;
+        width: 100%;
+        max-width: 400px;
         padding: .8rem 1.7rem .9rem 1.7rem;
         font-size: large;
     }

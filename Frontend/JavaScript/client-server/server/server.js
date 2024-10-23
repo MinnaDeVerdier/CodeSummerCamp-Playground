@@ -28,6 +28,8 @@ app.use(bodyParser.json({ type: 'application/json'}))
 app.use(session({
     name: 'CSCsession', 
     keys: ['secret-key', 'old-key'], // OR use secret, for only one option
+    httpOnly: true, 
+    secure: false,  //true for HTTPS
     maxAge: 1000 * 60 * 60 * 12 //expires after 12 hours or on browser close
 }))
 
@@ -95,7 +97,7 @@ app.get('/assignmentData/:assignmentID', (req, res) => {
 /* Adds user code to assignment data and sends to shared files for testing in container */
 app.post("/run/:lang/:assignmentID", (req, res) => {
     // Start watcher to listen for changes in file named after sessionID
-    let watcher = createWatcher(req, res)
+    let watcher = createListener(req, res)
     watcher.addListener('close', () => {
         console.log("...closed watcher..")
     })
@@ -124,7 +126,7 @@ function getAssignment(assignmentID) {
 }
 
 // FROM https://nodejs.org/docs/latest/api/fs.html#fswatchfilename-options-listener
-function createWatcher(req, res) {
+function createListener(req, res) {
     let filepath = path.join(__dirname, 'outputfiles', `${req.session.id}.json`)
     fs.appendFileSync(filepath, '', (err) => { 
         if (err) console.log(err)
