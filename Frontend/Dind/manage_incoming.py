@@ -17,7 +17,7 @@ def runcontainer():
         case '1':
             print('...OPENING PYTHON CONTAINER...')
             # Sends instructionfile (installs, full code, tests) to start the correct container
-            res = subprocess.run(['sh', '/usr/src/app/pythonsetup/create_python.sh', instructionFile, sessionID, "/usr/src/app/pythonsetup/runinput.py"])
+            res = subprocess.run(['sh', '/usr/src/app/pythonsetup/create_python.sh', instructionFile, sessionID, "/usr/src/app/pythonsetup/run_input.py"])
             print(f"...SUBPROCESS RES... ${res}...")
         case default:
             print("...CONTAINER FAIL...language not available")

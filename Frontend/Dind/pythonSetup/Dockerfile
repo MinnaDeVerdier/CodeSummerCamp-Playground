@@ -1,7 +1,7 @@
 FROM python
 WORKDIR /usr/src/app
 
-# If requirements contains modules to install
+# UNCOMMENT so requirements can contain modules to install:
 #COPY requirements.txt ./ 
 #RUN /bin/sh -c pip install --no-cache-dir -r requirements.txt
 

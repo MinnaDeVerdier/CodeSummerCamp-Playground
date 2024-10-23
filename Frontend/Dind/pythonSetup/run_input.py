@@ -2,7 +2,7 @@ import json
 import sys
 import subprocess
 
-print("----runinput.py----")
+print("----run_input.py----")
 print("args: ", sys.argv)
 instructionFile = sys.argv[1]
 sessionID = sys.argv[2]
@@ -32,7 +32,7 @@ def runTest(test, code):
     #     result['return_value'] = local_vars.get('__return__')
         result=res.stdout
     except Exception as e:
-        result=result+"EXception runinput.py subprocess:\n    " + str(e) + "\n"
+        result=result+"EXception run_input.py subprocess:\n    " + str(e) + "\n"
     # Write result/output of all tests to file based on user session
     with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "a") as outputfile:
         outputfile.write(f"{test}:\n    {result}")
@@ -60,9 +60,9 @@ def writeJson():
 with open(instructionFile) as Jfile:
     instruction = json.load(Jfile)
 
-# Empty previous attempts from session
-with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "w") as outputfile:
-    outputfile.flush()
+# Unneccessary, writeJson overwrites previous # Empty previous attempts from session
+# with open(f"/usr/src/app/outputfiles/{sessionID}_test.txt", "w") as outputfile:
+#     outputfile.flush()
 
 # Create runnable strings
 codeToRun = buildPythonTests()

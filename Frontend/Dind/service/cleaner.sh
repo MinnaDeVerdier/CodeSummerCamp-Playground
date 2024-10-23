@@ -36,11 +36,10 @@ CLEANING_TIME="2330"
 #echo "...CLEANING_TIME $CLEANING_TIME..."
 
 if [ $STARTING_TIME -ge $CLEANING_TIME ] ; then
-    COUNTDOWN=$(($STARTING_TIME - $CLEANING_TIME))
+    COUNTDOWN=$(expr $STARTING_TIME - $CLEANING_TIME)
 else
     COUNTDOWN=$(expr $CLEANING_TIME - $STARTING_TIME)
 fi
-COUNTDOWN="0115"
 
 # Sleeps until cleaning_time, then sleeps 24 hours between cleanings
 while true ; do
